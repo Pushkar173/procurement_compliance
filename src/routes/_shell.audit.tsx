@@ -18,6 +18,7 @@ import {
 } from "@/components/common/primitives";
 import { useStore } from "@/store/app-store";
 import { exportAuditCsv } from "@/lib/export-utils";
+import type { AuditEvent } from "@/data/demoData";
 
 export const Route = createFileRoute("/_shell/audit")({
   head: () => ({
@@ -32,15 +33,7 @@ export const Route = createFileRoute("/_shell/audit")({
   component: AuditPage,
 });
 
-const OBJECT_TYPES = [
-  "Document",
-  "Tender",
-  "Contract",
-  "Compliance",
-  "Report",
-  "User",
-  "Session",
-];
+const OBJECT_TYPES = ["Document", "Tender", "Contract", "Compliance", "Report", "User", "Session"];
 
 function AuditPage() {
   const { audit } = useStore();
@@ -78,8 +71,7 @@ function AuditPage() {
     });
   }, [audit, query, objectType, dateFrom, dateTo]);
 
-  const activeFilters =
-    [query, objectType, dateFrom, dateTo].filter(Boolean).length;
+  const activeFilters = [query, objectType, dateFrom, dateTo].filter(Boolean).length;
 
   const clearFilters = () => {
     setQuery("");
@@ -90,13 +82,15 @@ function AuditPage() {
 
   const handleExport = () => {
     exportAuditCsv(filtered, exportFormat);
-    toast.success(
-      `Audit trail exported as ${exportFormat.toUpperCase()}`,
-      { description: `${filtered.length} events exported.` },
-    );
+    toast.success(`Audit trail exported as ${exportFormat.toUpperCase()}`, {
+      description: `${filtered.length} events exported.`,
+    });
   };
 
-  const objectTypeColor: Record<string, string> = {
+  const objectTypeColor: Record<
+    AuditEvent["objectType"],
+    "info" | "primary" | "success" | "warning" | "neutral" | "danger"
+  > = {
     Document: "info",
     Tender: "primary",
     Contract: "success",
@@ -169,7 +163,8 @@ function AuditPage() {
           <p className="text-xs text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
             {audit.length} events
-            {activeFilters > 0 && ` · ${activeFilters} filter${activeFilters > 1 ? "s" : ""} applied`}
+            {activeFilters > 0 &&
+              ` · ${activeFilters} filter${activeFilters > 1 ? "s" : ""} applied`}
           </p>
           <div className="flex items-center gap-2">
             <Btn variant="ghost" size="sm" onClick={clearFilters} disabled={activeFilters === 0}>
@@ -223,16 +218,12 @@ function AuditPage() {
                 <Td className="text-sm">{e.action}</Td>
                 <Td className="max-w-48 truncate text-sm text-muted-foreground">{e.object}</Td>
                 <Td>
-                  <Pill tone={(objectTypeColor[e.objectType] as any) ?? "neutral"}>
-                    {e.objectType}
-                  </Pill>
+                  <Pill tone={objectTypeColor[e.objectType] ?? "neutral"}>{e.objectType}</Pill>
                 </Td>
                 <Td className="max-w-32 truncate text-xs text-muted-foreground">
                   {e.previous || "—"}
                 </Td>
-                <Td className="max-w-32 truncate text-xs text-muted-foreground">
-                  {e.next || "—"}
-                </Td>
+                <Td className="max-w-32 truncate text-xs text-muted-foreground">{e.next || "—"}</Td>
               </tr>
             ))}
           </TableShell>
@@ -243,9 +234,9 @@ function AuditPage() {
       <div className="flex items-start gap-2 rounded-md border border-border bg-muted/50 px-4 py-3">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
         <p className="text-xs text-muted-foreground">
-          Audit records are immutable and cannot be edited or deleted. All timestamps are
-          recorded at the time of the action. Exports include a complete, unaltered event log
-          suitable for statutory audit requirements.
+          Audit records are immutable and cannot be edited or deleted. All timestamps are recorded
+          at the time of the action. Exports include a complete, unaltered event log suitable for
+          statutory audit requirements.
         </p>
       </div>
     </div>

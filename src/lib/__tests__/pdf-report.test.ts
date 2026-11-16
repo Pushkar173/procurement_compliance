@@ -77,7 +77,10 @@ const doc1 = generateAuditReportDoc(demoData1);
 const pdfBytes1 = doc1.output("arraybuffer");
 
 assert(pdfBytes1.byteLength > 15000, `Demo 1 generated valid PDF of ${pdfBytes1.byteLength} bytes`);
-assert(doc1.getNumberOfPages() >= 2, `Demo 1 contains multiple pages (${doc1.getNumberOfPages()} pages)`);
+assert(
+  doc1.getNumberOfPages() >= 2,
+  `Demo 1 contains multiple pages (${doc1.getNumberOfPages()} pages)`,
+);
 
 // Check that the mandatory text labels are present in the PDF raw output string
 const pdfString1 = doc1.output().replace(/\x97/g, "—");
@@ -93,10 +96,7 @@ assert(
   pdfString1.includes("sample-tender-1-smart-classroom.pdf"),
   "Demo 1 includes the exact tender file name",
 );
-assert(
-  pdfString1.includes("Rajesh Kumar"),
-  "Demo 1 includes verifying officer name",
-);
+assert(pdfString1.includes("Rajesh Kumar"), "Demo 1 includes verifying officer name");
 assert(
   pdfString1.includes("Verified clause 1.4 conforms to GFR 2017"),
   "Demo 1 includes officer review note",
@@ -192,16 +192,16 @@ const userData: AuditReportData = {
 
 const doc3 = generateAuditReportDoc(userData);
 const pdfBytes3 = doc3.output("arraybuffer");
-assert(pdfBytes3.byteLength > 15000, `User upload generated valid PDF of ${pdfBytes3.byteLength} bytes`);
+assert(
+  pdfBytes3.byteLength > 15000,
+  `User upload generated valid PDF of ${pdfBytes3.byteLength} bytes`,
+);
 const pdfString3 = doc3.output().replace(/\x97/g, "—");
 assert(
   pdfString3.includes("my-uploaded-custom-tender-v2.pdf"),
   "User upload PDF report contains the custom uploaded filename",
 );
-assert(
-  pdfString3.includes("Anil Deshmukh"),
-  "User upload PDF report contains custom officer name",
-);
+assert(pdfString3.includes("Anil Deshmukh"), "User upload PDF report contains custom officer name");
 assert(
   pdfString3.includes("Preliminary Review Satisfactory"),
   "User upload PDF report contains review status",
@@ -220,14 +220,8 @@ assert(highPriorityCount > 0, `Audit contains ${highPriorityCount} High priority
 assert(medPriorityCount > 0, `Audit contains ${medPriorityCount} Medium priority rules`);
 assert(lowPriorityCount > 0, `Audit contains ${lowPriorityCount} Low priority rules`);
 
-assert(
-  pdfString3.includes("HIGH PRIORITY"),
-  "Report includes High Priority section header",
-);
-assert(
-  pdfString3.includes("MEDIUM PRIORITY"),
-  "Report includes Medium Priority section header",
-);
+assert(pdfString3.includes("HIGH PRIORITY"), "Report includes High Priority section header");
+assert(pdfString3.includes("MEDIUM PRIORITY"), "Report includes Medium Priority section header");
 assert(
   pdfString3.includes("LOW / ADVISORY") || pdfString3.includes("Low Priority Rules"),
   "Report includes Low Priority section header",

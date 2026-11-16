@@ -23,7 +23,10 @@ export const Route = createFileRoute("/")({
         content:
           "Centralise procurement regulations, track compliance, manage tenders and contracts, and generate reports from one platform. Academic project prototype.",
       },
-      { property: "og:title", content: "ProcureComply — Smarter Procurement. Stronger Compliance." },
+      {
+        property: "og:title",
+        content: "ProcureComply — Smarter Procurement. Stronger Compliance.",
+      },
       {
         property: "og:description",
         content:
@@ -83,14 +86,16 @@ function Landing() {
           </div>
           <nav className="ml-auto flex items-center gap-2">
             <Link
-              to="/auth" search={{ redirect: undefined }}
+              to="/auth"
+              search={{ redirect: undefined }}
               className="inline-flex h-9 items-center rounded-md border border-input px-3 text-sm font-medium transition-colors hover:bg-accent"
             >
               Login
             </Link>
             <Link
-              to="/auth" search={{ redirect: undefined }}
-              
+              to="/auth"
+              search={{ redirect: undefined }}
+
               className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Explore Demo <ArrowRight className="size-4" />
@@ -109,19 +114,21 @@ function Landing() {
               Stronger Compliance.
             </h1>
             <p className="mt-4 max-w-2xl text-base text-muted-foreground">
-              Centralize procurement regulations, track compliance, manage tenders and contracts, and
-              generate reports from one secure platform.
+              Centralize procurement regulations, track compliance, manage tenders and contracts,
+              and generate reports from one secure platform.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
-                to="/auth" search={{ redirect: undefined }}
+                to="/auth"
+                search={{ redirect: undefined }}
                 className="inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Login
               </Link>
               <Link
-                to="/auth" search={{ redirect: undefined }}
-                
+                to="/auth"
+                search={{ redirect: undefined }}
+
                 className="inline-flex h-11 items-center gap-1.5 rounded-md border border-input bg-card px-5 text-sm font-medium transition-colors hover:bg-accent"
               >
                 Explore Demo <ArrowRight className="size-4" />
@@ -177,11 +184,15 @@ function Landing() {
         <h2 className="text-2xl font-semibold tracking-tight">What the platform covers</h2>
         <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
           Structured procurement records and procurement documents are kept connected, so a
-          requirement can always be traced back to its source regulation and forward to its evidence.
+          requirement can always be traced back to its source regulation and forward to its
+          evidence.
         </p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
-            <article key={f.title} className="panel p-5 transition-shadow hover:shadow-[var(--shadow-raised)]">
+            <article
+              key={f.title}
+              className="panel p-5 transition-shadow hover:shadow-[var(--shadow-raised)]"
+            >
               <span className="grid size-10 place-items-center rounded-md bg-primary/10 text-primary">
                 <f.icon className="size-5" />
               </span>

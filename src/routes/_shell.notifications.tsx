@@ -14,13 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Pill } from "@/components/common/badges";
-import {
-  Btn,
-  DemoNotice,
-  EmptyState,
-  PageHeader,
-  Panel,
-} from "@/components/common/primitives";
+import { Btn, DemoNotice, EmptyState, PageHeader, Panel } from "@/components/common/primitives";
 import { useStore } from "@/store/app-store";
 
 export const Route = createFileRoute("/_shell/notifications")({
@@ -37,7 +31,16 @@ export const Route = createFileRoute("/_shell/notifications")({
 });
 
 function NotificationsPage() {
-  const { notifications, tenders, contracts, compliance, markRead, markAllRead, pushNotification, user } = useStore();
+  const {
+    notifications,
+    tenders,
+    contracts,
+    compliance,
+    markRead,
+    markAllRead,
+    pushNotification,
+    user,
+  } = useStore();
   const [filter, setFilter] = useState<"all" | "unread" | "read">("all");
 
   // ── Dynamic alert generation ──
@@ -58,7 +61,11 @@ function NotificationsPage() {
             kind: "warning",
             title,
             body: `${t.title} (${t.department}) closes on ${t.closingDate}. Ensure all submissions are finalized.`,
-            date: now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+            date: now.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
             link: `/tenders/${t.id}`,
           });
           existingTitles.add(title);
@@ -78,7 +85,11 @@ function NotificationsPage() {
             kind: "warning",
             title,
             body: `${c.name} with ${c.vendor} expires on ${c.endDate}. Review renewal options.`,
-            date: now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+            date: now.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
             link: `/contracts/${c.id}`,
           });
           existingTitles.add(title);
@@ -87,14 +98,10 @@ function NotificationsPage() {
     }
 
     // 3. Non-compliant or pending items on active tenders
-    const activeTenders = tenders.filter(
-      (t) => t.status !== "Closed" && t.status !== "Awarded",
-    );
+    const activeTenders = tenders.filter((t) => t.status !== "Closed" && t.status !== "Awarded");
     for (const t of activeTenders) {
       const items = compliance.filter((c) => c.tenderId === t.id);
-      const critical = items.filter(
-        (c) => c.status === "Non-Compliant" || c.status === "Pending",
-      );
+      const critical = items.filter((c) => c.status === "Non-Compliant" || c.status === "Pending");
       if (critical.length > 0) {
         const title = `${critical.length} compliance issue${critical.length > 1 ? "s" : ""} on ${t.id}`;
         if (!existingTitles.has(title)) {
@@ -102,7 +109,11 @@ function NotificationsPage() {
             kind: "warning",
             title,
             body: `${t.title} has ${critical.length} requirement${critical.length > 1 ? "s" : ""} that ${critical.length > 1 ? "are" : "is"} pending or non-compliant.`,
-            date: now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+            date: now.toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
             link: `/compliance?tender=${t.id}`,
           });
           existingTitles.add(title);
@@ -140,9 +151,7 @@ function NotificationsPage() {
         subtitle="System alerts, compliance warnings, and activity updates."
         actions={
           <>
-            <Pill tone={unreadCount > 0 ? "warning" : "success"}>
-              {unreadCount} unread
-            </Pill>
+            <Pill tone={unreadCount > 0 ? "warning" : "success"}>{unreadCount} unread</Pill>
             <Btn
               variant="outline"
               size="sm"
@@ -172,7 +181,11 @@ function NotificationsPage() {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {f === "all" ? `All (${notifications.length})` : f === "unread" ? `Unread (${unreadCount})` : `Read (${notifications.length - unreadCount})`}
+            {f === "all"
+              ? `All (${notifications.length})`
+              : f === "unread"
+                ? `Unread (${unreadCount})`
+                : `Read (${notifications.length - unreadCount})`}
           </button>
         ))}
       </div>
@@ -205,9 +218,7 @@ function NotificationsPage() {
                       {n.title}
                     </p>
                     <div className="flex shrink-0 items-center gap-2">
-                      {!n.read && (
-                        <span className="size-2 rounded-full bg-primary" />
-                      )}
+                      {!n.read && <span className="size-2 rounded-full bg-primary" />}
                       <span className="text-xs text-muted-foreground whitespace-nowrap">
                         {n.date}
                       </span>
@@ -228,14 +239,15 @@ function NotificationsPage() {
                       </Btn>
                     )}
                     {n.link && (
-                      <a
-                        href={n.link}
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
+                      <a href={n.link} className="text-xs font-medium text-primary hover:underline">
                         View details →
                       </a>
                     )}
-                    <Pill tone={n.kind === "warning" ? "warning" : n.kind === "success" ? "success" : "info"}>
+                    <Pill
+                      tone={
+                        n.kind === "warning" ? "warning" : n.kind === "success" ? "success" : "info"
+                      }
+                    >
                       {n.kind}
                     </Pill>
                   </div>
@@ -247,27 +259,37 @@ function NotificationsPage() {
       </Panel>
 
       {/* Alert Rules Info */}
-      <Panel title="Active Alert Rules" description="Automated alerts are generated based on these rules" bodyClassName="p-5">
+      <Panel
+        title="Active Alert Rules"
+        description="Automated alerts are generated based on these rules"
+        bodyClassName="p-5"
+      >
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="flex items-start gap-3 rounded-md border border-border p-3">
             <Clock className="mt-0.5 size-5 text-amber-500 shrink-0" />
             <div>
               <p className="text-sm font-medium">Tender Deadline</p>
-              <p className="text-xs text-muted-foreground">Alert when a tender closes within 48 hours</p>
+              <p className="text-xs text-muted-foreground">
+                Alert when a tender closes within 48 hours
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-md border border-border p-3">
             <AlertTriangle className="mt-0.5 size-5 text-orange-500 shrink-0" />
             <div>
               <p className="text-sm font-medium">Contract Expiry</p>
-              <p className="text-xs text-muted-foreground">Alert when a contract expires within 30 days</p>
+              <p className="text-xs text-muted-foreground">
+                Alert when a contract expires within 30 days
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3 rounded-md border border-border p-3">
             <ShieldAlert className="mt-0.5 size-5 text-red-500 shrink-0" />
             <div>
               <p className="text-sm font-medium">Compliance Issues</p>
-              <p className="text-xs text-muted-foreground">Alert on pending/non-compliant items on active tenders</p>
+              <p className="text-xs text-muted-foreground">
+                Alert on pending/non-compliant items on active tenders
+              </p>
             </div>
           </div>
         </div>

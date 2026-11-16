@@ -30,7 +30,10 @@ export const Route = createFileRoute("/_shell/contracts/")({
           "Monitor contracts, vendors, milestones, renewal dates and contract-stage compliance in one register.",
       },
       { property: "og:title", content: "Contract Management — ProcureComply" },
-      { property: "og:description", content: "Contract register with milestones, deadlines and compliance." },
+      {
+        property: "og:description",
+        content: "Contract register with milestones, deadlines and compliance.",
+      },
     ],
   }),
   loader: async () => {
@@ -43,7 +46,7 @@ function ContractsPage() {
   const { dbContracts } = Route.useLoaderData();
   const { contracts: storeContracts, compliance, updateContract, user } = useStore();
   const contracts = dbContracts.length > 0 ? dbContracts : storeContracts;
-  
+
   const role = user?.role;
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("");
@@ -53,7 +56,8 @@ function ContractsPage() {
     const term = query.trim().toLowerCase();
     return contracts.filter(
       (c) =>
-        (!term || [c.id, c.name, c.vendor, c.tenderId, c.manager].join(" ").toLowerCase().includes(term)) &&
+        (!term ||
+          [c.id, c.name, c.vendor, c.tenderId, c.manager].join(" ").toLowerCase().includes(term)) &&
         (!status || c.status === status) &&
         (!department || c.department === department),
     );
@@ -71,7 +75,11 @@ function ContractsPage() {
           <Btn
             size="sm"
             variant="outline"
-            onClick={() => toast.info("Export is a demo action", { description: "The filtered contract register would be exported." })}
+            onClick={() =>
+              toast.info("Export is a demo action", {
+                description: "The filtered contract register would be exported.",
+              })
+            }
           >
             <Download className="size-4" /> Export
           </Btn>
@@ -94,7 +102,9 @@ function ContractsPage() {
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Renewal documentation pending · milestone verification pending for “
-                    {c.milestones.find((m) => m.status === "In Progress")?.name ?? "current milestone"}”.
+                    {c.milestones.find((m) => m.status === "In Progress")?.name ??
+                      "current milestone"}
+                    ”.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -106,10 +116,15 @@ function ContractsPage() {
                   <Btn
                     size="sm"
                     variant="outline"
-                    disabled={role === "auditor" || (role === "officer" && c.manager !== ((user as any)?.user_metadata?.name || "Pushkar Bhati"))}
+                    disabled={
+                      role === "auditor" ||
+                      (role === "officer" && c.manager !== (user?.name || "Pushkar Bhati"))
+                    }
                     onClick={() => {
                       updateContract(c.id, { paymentStatus: "On Schedule" });
-                      toast.success(`${c.id} updated`, { description: "Payment status set to On Schedule." });
+                      toast.success(`${c.id} updated`, {
+                        description: "Payment status set to On Schedule.",
+                      });
                     }}
                   >
                     Update Status
@@ -128,13 +143,30 @@ function ContractsPage() {
 
       <Panel bodyClassName="space-y-4 p-5">
         <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr]">
-          <SearchInput value={query} onChange={setQuery} placeholder="Search contract ID, vendor, related tender…" />
-          <Select label="Status" value={status} options={["Active", "Expiring Soon", "Completed", "Terminated"]} onChange={setStatus} allLabel="All statuses" />
-          <Select label="Department" value={department} options={DEPARTMENTS} onChange={setDepartment} allLabel="All departments" />
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Search contract ID, vendor, related tender…"
+          />
+          <Select
+            label="Status"
+            value={status}
+            options={["Active", "Expiring Soon", "Completed", "Terminated"]}
+            onChange={setStatus}
+            allLabel="All statuses"
+          />
+          <Select
+            label="Department"
+            value={department}
+            options={DEPARTMENTS}
+            onChange={setDepartment}
+            allLabel="All departments"
+          />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
           <p className="text-xs text-muted-foreground">
-            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of {contracts.length} contracts
+            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
+            {contracts.length} contracts
           </p>
           <Btn
             variant="ghost"
@@ -153,7 +185,11 @@ function ContractsPage() {
 
       <Panel title="Contract Register" bodyClassName="p-0">
         {filtered.length === 0 ? (
-          <EmptyState icon={Building2} title="No contracts match the current filters." description="Adjust the search or clear the filters." />
+          <EmptyState
+            icon={Building2}
+            title="No contracts match the current filters."
+            description="Adjust the search or clear the filters."
+          />
         ) : (
           <TableShell
             head={
@@ -203,7 +239,14 @@ function ContractsPage() {
                     <ContractStatusBadge status={c.status} />
                   </Td>
                   <Td className="min-w-32">
-                    {items.length === 0 ? <Pill>No checklist</Pill> : <ProgressBar value={compliancePercent(items)} label={`${items.length} reqs`} />}
+                    {items.length === 0 ? (
+                      <Pill>No checklist</Pill>
+                    ) : (
+                      <ProgressBar
+                        value={compliancePercent(items)}
+                        label={`${items.length} reqs`}
+                      />
+                    )}
                   </Td>
                   <Td className="text-right">
                     <Link to="/contracts/$contractId" params={{ contractId: c.id }}>

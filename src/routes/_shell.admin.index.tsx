@@ -49,7 +49,8 @@ export const Route = createFileRoute("/_shell/admin/")({
       { title: "Admin Console — ProcureComply" },
       {
         name: "description",
-        content: "Executive administration console for governance, user provisioning, and compliance health.",
+        content:
+          "Executive administration console for governance, user provisioning, and compliance health.",
       },
     ],
   }),
@@ -106,7 +107,11 @@ function AdminDashboard() {
 
     const nextId = `USR-${String(users.length + 1).padStart(3, "0")}`;
     const now = new Date();
-    const dateStr = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const dateStr = now.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
     const timeStr = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 
     const newUser: AppUser = {
@@ -207,7 +212,8 @@ function AdminDashboard() {
             </div>
             <h3 className="font-semibold text-foreground text-base pt-1">User Management</h3>
             <p className="text-xs text-muted-foreground">
-              Provision accounts, adjust RBAC permissions (Officer, Auditor, Admin), and monitor active session status.
+              Provision accounts, adjust RBAC permissions (Officer, Auditor, Admin), and monitor
+              active session status.
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
@@ -229,7 +235,8 @@ function AdminDashboard() {
             </div>
             <h3 className="font-semibold text-foreground text-base pt-1">Document Management</h3>
             <p className="text-xs text-muted-foreground">
-              Administer GFR manuals, CVC guidelines, circular amendments, and document revision histories.
+              Administer GFR manuals, CVC guidelines, circular amendments, and document revision
+              histories.
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
@@ -251,7 +258,8 @@ function AdminDashboard() {
             </div>
             <h3 className="font-semibold text-foreground text-base pt-1">System Settings</h3>
             <p className="text-xs text-muted-foreground">
-              Configure verification thresholds, dual sign-off rules, audit retention, and Supabase integration status.
+              Configure verification thresholds, dual sign-off rules, audit retention, and Supabase
+              integration status.
             </p>
           </div>
           <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
@@ -283,7 +291,9 @@ function AdminDashboard() {
               </div>
               <div className="rounded-lg border bg-card p-3 text-center">
                 <p className="text-xs text-muted-foreground font-medium">Auditors</p>
-                <p className="text-2xl font-semibold text-warning-foreground mt-1">{auditorsCount}</p>
+                <p className="text-2xl font-semibold text-warning-foreground mt-1">
+                  {auditorsCount}
+                </p>
                 <p className="text-[11px] text-muted-foreground mt-0.5">Vigilance & Reviews</p>
               </div>
               <div className="rounded-lg border bg-card p-3 text-center">
@@ -334,7 +344,8 @@ function AdminDashboard() {
                 <div className="flex justify-between text-xs font-medium mb-1">
                   <span>Ministry of Finance (GFR & Manuals)</span>
                   <span>
-                    {documents.filter((d) => d.authority === "Ministry of Finance").length} Documents
+                    {documents.filter((d) => d.authority === "Ministry of Finance").length}{" "}
+                    Documents
                   </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -351,7 +362,8 @@ function AdminDashboard() {
                 <div className="flex justify-between text-xs font-medium mb-1">
                   <span>Central Vigilance Commission (CVC)</span>
                   <span>
-                    {documents.filter((d) => d.authority === "Central Vigilance Commission").length} Documents
+                    {documents.filter((d) => d.authority === "Central Vigilance Commission").length}{" "}
+                    Documents
                   </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -439,7 +451,9 @@ function AdminDashboard() {
                   <span className="font-medium text-xs text-foreground">{evt.action}</span>
                 </Td>
                 <Td>
-                  <span className="font-mono text-xs text-muted-foreground line-clamp-1">{evt.object}</span>
+                  <span className="font-mono text-xs text-muted-foreground line-clamp-1">
+                    {evt.object}
+                  </span>
                 </Td>
                 <Td>
                   <span className="rounded bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
@@ -528,9 +542,7 @@ function AdminDashboard() {
               className={inputClass}
               placeholder="e.g. Executive Engineer (Procurement)"
               value={newUserData.designation}
-              onChange={(e) =>
-                setNewUserData((prev) => ({ ...prev, designation: e.target.value }))
-              }
+              onChange={(e) => setNewUserData((prev) => ({ ...prev, designation: e.target.value }))}
             />
           </Field>
         </form>

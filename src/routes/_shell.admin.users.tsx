@@ -115,7 +115,11 @@ function UsersManagementPage() {
 
     const nextId = `USR-${String(users.length + 1).padStart(3, "0")}`;
     const now = new Date();
-    const dateStr = now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const dateStr = now.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
     const timeStr = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 
     const newUser: AppUser = {
@@ -201,7 +205,10 @@ function UsersManagementPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `procurecomply-users-${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      "download",
+      `procurecomply-users-${new Date().toISOString().slice(0, 10)}.csv`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -241,11 +248,41 @@ function UsersManagementPage() {
 
       {/* Metric Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <StatCard label="Total Accounts" value={totalUsers} icon={Users} hint="Registered users in directory" tone="primary" />
-        <StatCard label="Officers" value={officersCount} icon={ShieldCheck} hint="Procurement & tender execution" tone="primary" />
-        <StatCard label="Auditors" value={auditorsCount} icon={Shield} hint="Vigilance & oversight reviewers" tone="warning" />
-        <StatCard label="Administrators" value={adminsCount} icon={ShieldAlert} hint="System governance & config" tone="caution" />
-        <StatCard label="Active Status" value={`${activeCount}/${totalUsers}`} icon={UserCheck} hint="Currently enabled" tone="success" />
+        <StatCard
+          label="Total Accounts"
+          value={totalUsers}
+          icon={Users}
+          hint="Registered users in directory"
+          tone="primary"
+        />
+        <StatCard
+          label="Officers"
+          value={officersCount}
+          icon={ShieldCheck}
+          hint="Procurement & tender execution"
+          tone="primary"
+        />
+        <StatCard
+          label="Auditors"
+          value={auditorsCount}
+          icon={Shield}
+          hint="Vigilance & oversight reviewers"
+          tone="warning"
+        />
+        <StatCard
+          label="Administrators"
+          value={adminsCount}
+          icon={ShieldAlert}
+          hint="System governance & config"
+          tone="caution"
+        />
+        <StatCard
+          label="Active Status"
+          value={`${activeCount}/${totalUsers}`}
+          icon={UserCheck}
+          hint="Currently enabled"
+          tone="success"
+        />
       </div>
 
       {/* Filter and Search Bar */}
@@ -330,7 +367,9 @@ function UsersManagementPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">{u.designation} ({u.id})</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {u.designation} ({u.id})
+                        </p>
                       </div>
                     </div>
                   </Td>
@@ -384,7 +423,9 @@ function UsersManagementPage() {
                         size="sm"
                         onClick={() => toggleUserStatus(u)}
                         disabled={isSelf}
-                        className={u.status === "Active" ? "text-destructive hover:bg-destructive/10" : ""}
+                        className={
+                          u.status === "Active" ? "text-destructive hover:bg-destructive/10" : ""
+                        }
                         title={u.status === "Active" ? "Disable account" : "Enable account"}
                       >
                         {u.status === "Active" ? (
@@ -417,7 +458,8 @@ function UsersManagementPage() {
               Procurement Officer
             </div>
             <p className="text-xs text-muted-foreground">
-              Operational officers responsible for drafting tenders, uploading compliance evidence, and managing contract delivery.
+              Operational officers responsible for drafting tenders, uploading compliance evidence,
+              and managing contract delivery.
             </p>
             <ul className="text-xs space-y-1 text-foreground/80 list-disc list-inside pt-2">
               <li>Create & edit assigned tenders</li>
@@ -433,7 +475,8 @@ function UsersManagementPage() {
               Auditor / Vigilance Officer
             </div>
             <p className="text-xs text-muted-foreground">
-              Independent oversight personnel responsible for reviewing compliance status, evidence validity, and audit trail integrity.
+              Independent oversight personnel responsible for reviewing compliance status, evidence
+              validity, and audit trail integrity.
             </p>
             <ul className="text-xs space-y-1 text-foreground/80 list-disc list-inside pt-2">
               <li>Read-only access across all modules</li>
@@ -449,7 +492,8 @@ function UsersManagementPage() {
               Administrator
             </div>
             <p className="text-xs text-muted-foreground">
-              Executive authority managing platform configuration, user account provisioning, and regulatory master data.
+              Executive authority managing platform configuration, user account provisioning, and
+              regulatory master data.
             </p>
             <ul className="text-xs space-y-1 text-foreground/80 list-disc list-inside pt-2">
               <li>Provision & deactivate user accounts</li>
@@ -504,7 +548,9 @@ function UsersManagementPage() {
               <select
                 className={inputClass}
                 value={newUserData.role}
-                onChange={(e) => setNewUserData((prev) => ({ ...prev, role: e.target.value as Role }))}
+                onChange={(e) =>
+                  setNewUserData((prev) => ({ ...prev, role: e.target.value as Role }))
+                }
               >
                 <option value="officer">Procurement Officer</option>
                 <option value="auditor">Auditor / Vigilance Officer</option>
@@ -516,7 +562,9 @@ function UsersManagementPage() {
               <select
                 className={inputClass}
                 value={newUserData.department}
-                onChange={(e) => setNewUserData((prev) => ({ ...prev, department: e.target.value }))}
+                onChange={(e) =>
+                  setNewUserData((prev) => ({ ...prev, department: e.target.value }))
+                }
               >
                 {DEPARTMENTS.map((dept) => (
                   <option key={dept} value={dept}>
@@ -580,7 +628,9 @@ function UsersManagementPage() {
               <select
                 className={inputClass}
                 value={editUserData.role}
-                onChange={(e) => setEditUserData((prev) => ({ ...prev, role: e.target.value as Role }))}
+                onChange={(e) =>
+                  setEditUserData((prev) => ({ ...prev, role: e.target.value as Role }))
+                }
               >
                 <option value="officer">Procurement Officer</option>
                 <option value="auditor">Auditor / Vigilance Officer</option>
@@ -610,7 +660,9 @@ function UsersManagementPage() {
               <select
                 className={inputClass}
                 value={editUserData.department}
-                onChange={(e) => setEditUserData((prev) => ({ ...prev, department: e.target.value }))}
+                onChange={(e) =>
+                  setEditUserData((prev) => ({ ...prev, department: e.target.value }))
+                }
               >
                 {DEPARTMENTS.map((dept) => (
                   <option key={dept} value={dept}>
@@ -625,7 +677,9 @@ function UsersManagementPage() {
                 type="text"
                 className={inputClass}
                 value={editUserData.designation}
-                onChange={(e) => setEditUserData((prev) => ({ ...prev, designation: e.target.value }))}
+                onChange={(e) =>
+                  setEditUserData((prev) => ({ ...prev, designation: e.target.value }))
+                }
               />
             </Field>
           </div>

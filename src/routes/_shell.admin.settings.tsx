@@ -134,7 +134,9 @@ function AdminSettingsPage() {
     try {
       const hasLiveUrl = Boolean(import.meta.env["VITE_SUPABASE_URL"]);
       if (hasLiveUrl) {
-        const { error } = await supabase.from("compliance_records").select("count", { count: "exact", head: true });
+        const { error } = await supabase
+          .from("compliance_records")
+          .select("count", { count: "exact", head: true });
         if (!error) {
           setConnectionStatus("connected");
           toast.success("Supabase live connection confirmed", {
@@ -149,7 +151,8 @@ function AdminSettingsPage() {
       } else {
         setConnectionStatus("mock");
         toast.info("Operating in robust prototype mode", {
-          description: "All records are simulated in memory and persisted locally via localStorage.",
+          description:
+            "All records are simulated in memory and persisted locally via localStorage.",
         });
       }
     } catch {
@@ -176,7 +179,10 @@ function AdminSettingsPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `procurecomply-full-backup-${new Date().toISOString().slice(0, 10)}.json`);
+    link.setAttribute(
+      "download",
+      `procurecomply-full-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -291,7 +297,8 @@ function AdminSettingsPage() {
               <div>
                 <p className="text-sm font-medium">Mandatory Evidence Upload</p>
                 <p className="text-xs text-muted-foreground">
-                  Prevent marking compliance items as "Compliant" without an attached document or certificate.
+                  Prevent marking compliance items as "Compliant" without an attached document or
+                  certificate.
                 </p>
               </div>
               <input
@@ -308,7 +315,8 @@ function AdminSettingsPage() {
               <div>
                 <p className="text-sm font-medium">Dual Sign-Off for High-Value Tenders</p>
                 <p className="text-xs text-muted-foreground">
-                  Requires independent approval by both Procurement Officer and Finance Controller for bids &gt; ₹50 Cr.
+                  Requires independent approval by both Procurement Officer and Finance Controller
+                  for bids &gt; ₹50 Cr.
                 </p>
               </div>
               <input
@@ -360,7 +368,10 @@ function AdminSettingsPage() {
                   className={inputClass}
                   value={settings.escalationNoticeDays}
                   onChange={(e) =>
-                    setSettings((s) => ({ ...s, escalationNoticeDays: Number(e.target.value) || 14 }))
+                    setSettings((s) => ({
+                      ...s,
+                      escalationNoticeDays: Number(e.target.value) || 14,
+                    }))
                   }
                 />
               </Field>
@@ -455,7 +466,8 @@ function AdminSettingsPage() {
             <div className="rounded-lg border p-4 bg-card space-y-2">
               <p className="text-sm font-medium">Export System State</p>
               <p className="text-xs text-muted-foreground">
-                Download a complete JSON snapshot containing all users, regulatory documents, tenders, contracts, compliance items, and audit logs.
+                Download a complete JSON snapshot containing all users, regulatory documents,
+                tenders, contracts, compliance items, and audit logs.
               </p>
               <Btn variant="outline" size="sm" onClick={exportSystemBackup}>
                 <Download className="size-4" />
@@ -466,13 +478,10 @@ function AdminSettingsPage() {
             <div className="rounded-lg border border-destructive/25 p-4 bg-destructive/5 space-y-2">
               <p className="text-sm font-medium text-destructive">Danger Zone: Reset Demo State</p>
               <p className="text-xs text-muted-foreground">
-                Clears all custom added users, documents, and modified records, resetting ProcureComply back to pristine seed data.
+                Clears all custom added users, documents, and modified records, resetting
+                ProcureComply back to pristine seed data.
               </p>
-              <Btn
-                variant="danger"
-                size="sm"
-                onClick={() => setResetModalOpen(true)}
-              >
+              <Btn variant="danger" size="sm" onClick={() => setResetModalOpen(true)}>
                 <Trash2 className="size-4" />
                 Reset Prototype Data
               </Btn>
@@ -499,7 +508,8 @@ function AdminSettingsPage() {
         }
       >
         <p className="text-sm text-muted-foreground">
-          Any custom users created, uploaded documents, or compliance changes during this session will be reverted to initial defaults. Are you sure?
+          Any custom users created, uploaded documents, or compliance changes during this session
+          will be reverted to initial defaults. Are you sure?
         </p>
       </Modal>
     </div>

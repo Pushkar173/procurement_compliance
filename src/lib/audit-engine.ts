@@ -83,10 +83,7 @@ const DISCLAIMER =
 /**
  * Search for a term in page text (case-insensitive) and extract evidence.
  */
-function searchInPages(
-  pages: PdfPage[],
-  term: string,
-): EvidenceSnippet[] {
+function searchInPages(pages: PdfPage[], term: string): EvidenceSnippet[] {
   const results: EvidenceSnippet[] = [];
   const lowerTerm = term.toLowerCase();
 
@@ -204,9 +201,7 @@ function evaluateRule(rule: AuditRule, pages: PdfPage[]): AuditFinding {
       .join(" ")
       .toLowerCase();
 
-    const strengthMatched = rule.strengthenTerms.filter((t) =>
-      fullText.includes(t.toLowerCase()),
-    );
+    const strengthMatched = rule.strengthenTerms.filter((t) => fullText.includes(t.toLowerCase()));
 
     if (strengthMatched.length === 0) {
       // Primary found but no strengthening terms — "Needs Review"
@@ -262,7 +257,8 @@ function evaluateRule(rule: AuditRule, pages: PdfPage[]): AuditFinding {
 function cleanPagesForAudit(pages: PdfPage[]): PdfPage[] {
   return pages.map((page) => {
     let text = page.text;
-    const omitPattern = /(?:items\s+deliberately\s+omitted|deliberate\s+omissions\s+for\s+testing)/i;
+    const omitPattern =
+      /(?:items\s+deliberately\s+omitted|deliberate\s+omissions\s+for\s+testing)/i;
     const match = text.search(omitPattern);
     if (match !== -1) {
       text = text.slice(0, match).trim();

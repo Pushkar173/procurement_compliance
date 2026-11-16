@@ -69,9 +69,7 @@ export type PdfExtractionOutcome = PdfExtractionResult | PdfExtractionError;
  * conditions: password-protected, corrupted, empty, or scanned (image-only)
  * PDFs.
  */
-export async function extractPdfText(
-  file: File,
-): Promise<PdfExtractionOutcome> {
+export async function extractPdfText(file: File): Promise<PdfExtractionOutcome> {
   try {
     const arrayBuffer = await file.arrayBuffer();
 
@@ -79,16 +77,20 @@ export async function extractPdfText(
       return {
         ok: false,
         errorType: "empty",
-        message:
-          "The uploaded file is empty (0 bytes). Please choose a valid PDF.",
+        message: "The uploaded file is empty (0 bytes). Please choose a valid PDF.",
       };
     }
 
     let pdf: pdfjsLib.PDFDocumentProxy;
     try {
       pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    } catch (loadErr: any) {
-      if (loadErr?.name === "PasswordException") {
+    } catch (loadErr: unknown) {
+      const errName =
+        typeof loadErr === "object" && loadErr !== null && "name" in loadErr
+          ? String((loadErr as { name?: unknown }).name)
+          : "";
+      const errMsg = loadErr instanceof Error ? loadErr.message : "Unknown error";
+      if (errName === "PasswordException") {
         return {
           ok: false,
           errorType: "password-protected",
@@ -99,7 +101,7 @@ export async function extractPdfText(
       return {
         ok: false,
         errorType: "corrupted",
-        message: `Could not read this PDF — it may be corrupted or in an unsupported format. (${loadErr?.message ?? "Unknown error"})`,
+        message: `Could not read this PDF — it may be corrupted or in an unsupported format. (${errMsg})`,
       };
     }
 
@@ -113,7 +115,7 @@ export async function extractPdfText(
 
     // Extract metadata
     const meta = await pdf.getMetadata().catch(() => null);
-    const pdfInfo = meta?.info as Record<string, any> | undefined;
+    const pdfInfo = meta?.info as Record<string, unknown> | undefined;
 
     // Extract text page by page
     const pages: PdfPage[] = [];
@@ -123,7 +125,11 @@ export async function extractPdfText(
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
       const text = content.items
-        .map((item: any) => ("str" in item ? item.str : ""))
+        .map((item: unknown) =>
+          typeof item === "object" && item !== null && "str" in item
+            ? String((item as { str: unknown }).str)
+            : "",
+        )
         .join(" ")
         .replace(/\s+/g, " ")
         .trim();
@@ -153,16 +159,18 @@ export async function extractPdfText(
       fullText,
       emptyPageNumbers,
       info: {
-        title: pdfInfo?.Title ?? null,
-        author: pdfInfo?.Author ?? null,
-        creationDate: pdfInfo?.CreationDate ?? null,
+        title: typeof pdfInfo?.["Title"] === "string" ? pdfInfo["Title"] : null,
+        author: typeof pdfInfo?.["Author"] === "string" ? pdfInfo["Author"] : null,
+        creationDate:
+          typeof pdfInfo?.["CreationDate"] === "string" ? pdfInfo["CreationDate"] : null,
       },
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Unknown error";
     return {
       ok: false,
       errorType: "unknown",
-      message: `An unexpected error occurred while reading the PDF: ${err?.message ?? "Unknown error"}`,
+      message: `An unexpected error occurred while reading the PDF: ${message}`,
     };
   }
 }

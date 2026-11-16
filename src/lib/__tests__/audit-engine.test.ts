@@ -265,7 +265,10 @@ console.log("\n-- Report metadata --");
 assert(report1.score > 0, `Score is positive: ${report1.score}%`);
 assert(report1.score <= 100, `Score is <= 100: ${report1.score}%`);
 assert(report1.disclaimer.length > 0, "Disclaimer is present");
-assert(report1.findings.every((f) => !f.humanVerified), "All findings start unverified");
+assert(
+  report1.findings.every((f) => !f.humanVerified),
+  "All findings start unverified",
+);
 assert(
   report1.findings.every((f) => f.source.type === "demo" || f.source.type === "reference"),
   "All findings have source type 'demo' or 'reference'",
@@ -325,7 +328,10 @@ assert(
 console.log("\n\n=== Empty / No-text test ===\n");
 
 const emptyReport = runAudit([{ pageNumber: 1, text: "" }]);
-assert(emptyReport.findings.every((f) => f.status === "Missing"), "All rules are Missing for empty text");
+assert(
+  emptyReport.findings.every((f) => f.status === "Missing"),
+  "All rules are Missing for empty text",
+);
 assert(emptyReport.score === 0, `Score is 0 for empty text: ${emptyReport.score}`);
 
 console.log("\n\n=== RESULTS ===\n");

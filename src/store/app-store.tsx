@@ -161,7 +161,8 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback((role: Role) => {
-    const account = seedUsers.find((u) => u.role === role && u.status === "Active") ?? seedUsers[0]!;
+    const account =
+      seedUsers.find((u) => u.role === role && u.status === "Active") ?? seedUsers[0]!;
     setUser(account ?? null);
     try {
       localStorage.setItem(SESSION_KEY, JSON.stringify(role));
@@ -374,7 +375,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const addUser = useCallback(
     (u: AppUser) => {
       setUsers((prev) => [...prev, u]);
-      log({ action: "User created", object: `${u.id} — ${u.name}`, objectType: "User", next: ROLE_LABEL[u.role] });
+      log({
+        action: "User created",
+        object: `${u.id} — ${u.name}`,
+        objectType: "User",
+        next: ROLE_LABEL[u.role],
+      });
     },
     [log],
   );

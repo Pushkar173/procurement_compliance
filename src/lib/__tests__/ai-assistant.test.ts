@@ -93,10 +93,7 @@ assert(
   envSuggestion?.citedExcerpt === null,
   "No cited excerpt is invented when evidence is absent",
 );
-assert(
-  envSuggestion?.pageNumber === null,
-  "Page number is null when evidence is absent",
-);
+assert(envSuggestion?.pageNumber === null, "Page number is null when evidence is absent");
 assert(
   envSuggestion?.isValidSourceExcerpt === false,
   "isValidSourceExcerpt is false for missing evidence",
@@ -104,7 +101,7 @@ assert(
 assert(
   Boolean(
     envSuggestion?.gapAnalysis.toLowerCase().includes("gap") ||
-      envSuggestion?.gapAnalysis.toLowerCase().includes("not found"),
+    envSuggestion?.gapAnalysis.toLowerCase().includes("not found"),
   ),
   "Gap analysis clearly explains the missing clause risk",
 );
@@ -120,7 +117,9 @@ assert(
   "Zero excerpts invented for empty document",
 );
 
-console.log("\n=== Test Suite 4: AI Suggestion Lacks Valid Source Excerpt (Hallucination Test) ===\n");
+console.log(
+  "\n=== Test Suite 4: AI Suggestion Lacks Valid Source Excerpt (Hallucination Test) ===\n",
+);
 
 // Scenario A: AI invents a quote that does NOT exist on the page
 const hallucinatedSuggestion: AiReviewSuggestion = {

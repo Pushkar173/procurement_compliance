@@ -60,7 +60,7 @@ function DocumentsPage() {
   const { documents: storeDocuments, tenders, linkRegulation, can, user } = useStore();
   const role = user?.role;
   const documents = dbDocuments.length > 0 ? dbDocuments : storeDocuments;
-  
+
   const { q } = Route.useSearch();
   const navigate = useNavigate();
 
@@ -74,14 +74,26 @@ function DocumentsPage() {
   const [linkTarget, setLinkTarget] = useState("");
 
   const years = useMemo(
-    () => Array.from(new Set(documents.map((d) => String(d.year)))).sort().reverse(),
+    () =>
+      Array.from(new Set(documents.map((d) => String(d.year))))
+        .sort()
+        .reverse(),
     [documents],
   );
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
     return documents.filter((d) => {
-      const haystack = [d.id, d.title, d.authority, d.type, d.category, d.description, d.applicability, ...d.requirements]
+      const haystack = [
+        d.id,
+        d.title,
+        d.authority,
+        d.type,
+        d.category,
+        d.description,
+        d.applicability,
+        ...d.requirements,
+      ]
         .join(" ")
         .toLowerCase();
       return (
@@ -95,7 +107,8 @@ function DocumentsPage() {
     });
   }, [documents, query, authority, type, category, year, status]);
 
-  const activeFilters = [authority, type, category, year, status].filter(Boolean).length + (query ? 1 : 0);
+  const activeFilters =
+    [authority, type, category, year, status].filter(Boolean).length + (query ? 1 : 0);
 
   const clearAll = () => {
     setQuery("");
@@ -107,9 +120,7 @@ function DocumentsPage() {
     navigate({ to: "/documents", search: { q: "" } });
   };
 
-  const related = selected
-    ? documents.filter((d) => selected.relatedDocs.includes(d.id))
-    : [];
+  const related = selected ? documents.filter((d) => selected.relatedDocs.includes(d.id)) : [];
 
   return (
     <div className="space-y-6">
@@ -119,7 +130,15 @@ function DocumentsPage() {
         actions={
           <>
             <Pill tone="primary">{documents.length} records</Pill>
-            <Btn variant="outline" size="sm" onClick={() => toast.info("Export is a demo action", { description: "A CSV of the filtered repository would be downloaded." })}>
+            <Btn
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                toast.info("Export is a demo action", {
+                  description: "A CSV of the filtered repository would be downloaded.",
+                })
+              }
+            >
               <Download className="size-4" /> Export
             </Btn>
           </>
@@ -135,16 +154,48 @@ function DocumentsPage() {
           placeholder="Search regulations, circulars, guidelines…"
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <Select label="Issuing Authority" value={authority} options={AUTHORITIES} onChange={setAuthority} allLabel="All authorities" />
-          <Select label="Document Type" value={type} options={DOC_TYPES} onChange={setType} allLabel="All types" />
-          <Select label="Category" value={category} options={CATEGORIES} onChange={setCategory} allLabel="All categories" />
-          <Select label="Year" value={year} options={years} onChange={setYear} allLabel="All years" />
-          <Select label="Status" value={status} options={["Active", "Superseded", "Archived"]} onChange={setStatus} allLabel="All statuses" />
+          <Select
+            label="Issuing Authority"
+            value={authority}
+            options={AUTHORITIES}
+            onChange={setAuthority}
+            allLabel="All authorities"
+          />
+          <Select
+            label="Document Type"
+            value={type}
+            options={DOC_TYPES}
+            onChange={setType}
+            allLabel="All types"
+          />
+          <Select
+            label="Category"
+            value={category}
+            options={CATEGORIES}
+            onChange={setCategory}
+            allLabel="All categories"
+          />
+          <Select
+            label="Year"
+            value={year}
+            options={years}
+            onChange={setYear}
+            allLabel="All years"
+          />
+          <Select
+            label="Status"
+            value={status}
+            options={["Active", "Superseded", "Archived"]}
+            onChange={setStatus}
+            allLabel="All statuses"
+          />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
           <p className="text-xs text-muted-foreground">
-            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of {documents.length} documents
-            {activeFilters > 0 && ` · ${activeFilters} filter${activeFilters > 1 ? "s" : ""} applied`}
+            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
+            {documents.length} documents
+            {activeFilters > 0 &&
+              ` · ${activeFilters} filter${activeFilters > 1 ? "s" : ""} applied`}
           </p>
           <Btn variant="ghost" size="sm" onClick={clearAll} disabled={activeFilters === 0}>
             <RotateCcw className="size-3.5" /> Clear filters
@@ -219,27 +270,41 @@ function DocumentsPage() {
         }}
         wide
         title={selected?.title ?? ""}
-        description={selected ? `${selected.id} · Version ${selected.version} · ${selected.status}` : ""}
+        description={
+          selected ? `${selected.id} · Version ${selected.version} · ${selected.status}` : ""
+        }
         footer={
           <>
             <Btn
               variant="outline"
               size="sm"
-              onClick={() => toast.info("Document viewer is a demo action", { description: "The stored PDF would open in a viewer." })}
+              onClick={() =>
+                toast.info("Document viewer is a demo action", {
+                  description: "The stored PDF would open in a viewer.",
+                })
+              }
             >
               <Eye className="size-3.5" /> View Document
             </Btn>
             <Btn
               variant="outline"
               size="sm"
-              onClick={() => toast.info("Download is a demo action", { description: `${selected?.id} would be downloaded.` })}
+              onClick={() =>
+                toast.info("Download is a demo action", {
+                  description: `${selected?.id} would be downloaded.`,
+                })
+              }
             >
               <Download className="size-3.5" /> Download
             </Btn>
             <Btn
               variant="outline"
               size="sm"
-              onClick={() => toast.success("Marked as reference", { description: `${selected?.id} saved to your reference list.` })}
+              onClick={() =>
+                toast.success("Marked as reference", {
+                  description: `${selected?.id} saved to your reference list.`,
+                })
+              }
             >
               <Bookmark className="size-3.5" /> Mark as Reference
             </Btn>
@@ -285,7 +350,9 @@ function DocumentsPage() {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold">Compliance Requirements Derived from this Document</h3>
+              <h3 className="text-sm font-semibold">
+                Compliance Requirements Derived from this Document
+              </h3>
               <ul className="mt-2 space-y-1.5">
                 {selected.requirements.map((r) => (
                   <li key={r} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -301,8 +368,8 @@ function DocumentsPage() {
                 <Link2 className="size-4" /> Add to Tender
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Linking a regulation to a tender makes its requirements part of that tender's compliance
-                checklist.
+                Linking a regulation to a tender makes its requirements part of that tender's
+                compliance checklist.
               </p>
               <div className="mt-3 flex flex-wrap items-end gap-2">
                 <label className="flex min-w-56 flex-col gap-1">
@@ -347,8 +414,13 @@ function DocumentsPage() {
               </h3>
               <ul className="mt-2 divide-y divide-border rounded-md border border-border">
                 {selected.history.map((h, i) => (
-                  <li key={`${h.version}-${i}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2.5 text-sm">
-                    <Pill tone={h.version === selected.version ? "success" : "neutral"}>v{h.version}</Pill>
+                  <li
+                    key={`${h.version}-${i}`}
+                    className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2.5 text-sm"
+                  >
+                    <Pill tone={h.version === selected.version ? "success" : "neutral"}>
+                      v{h.version}
+                    </Pill>
                     <span className="text-muted-foreground">{h.date}</span>
                     <span className="min-w-0 flex-1 truncate">{h.note}</span>
                     <span className="text-xs text-muted-foreground">{h.by}</span>
@@ -356,7 +428,8 @@ function DocumentsPage() {
                 ))}
               </ul>
               <p className="mt-2 text-xs text-muted-foreground">
-                Currently active version: <span className="font-medium text-foreground">v{selected.version}</span>
+                Currently active version:{" "}
+                <span className="font-medium text-foreground">v{selected.version}</span>
               </p>
             </div>
 
@@ -410,7 +483,9 @@ function DocumentsPage() {
                 <BookOpen className="size-4" /> Related Documents
               </h3>
               {related.length === 0 ? (
-                <p className="mt-1.5 text-sm text-muted-foreground">No related documents recorded.</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  No related documents recorded.
+                </p>
               ) : (
                 <ul className="mt-2 divide-y divide-border rounded-md border border-border">
                   {related.map((r) => (

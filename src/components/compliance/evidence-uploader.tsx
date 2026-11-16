@@ -126,13 +126,12 @@ export function EvidenceUploader({
           toast.success(`Uploaded "${file.name}"`, {
             description: `${formatFileSize(file.size)} · attached to ${complianceRecordId}`,
           });
-        } catch (err: any) {
+        } catch (err: unknown) {
+          const message = err instanceof Error ? err.message : "Upload failed";
           setPendingFiles((prev) =>
-            prev.map((pf) =>
-              pf.id === pendingId ? { ...pf, error: err.message || "Upload failed" } : pf,
-            ),
+            prev.map((pf) => (pf.id === pendingId ? { ...pf, error: message } : pf)),
           );
-          toast.error(`Failed to upload "${file.name}"`, { description: err.message });
+          toast.error(`Failed to upload "${file.name}"`, { description: message });
         }
       }
     },
@@ -233,9 +232,7 @@ export function EvidenceUploader({
                     style={{ width: `${pf.progress}%` }}
                   />
                 </div>
-                {pf.error && (
-                  <p className="mt-1 text-xs text-destructive">{pf.error}</p>
-                )}
+                {pf.error && <p className="mt-1 text-xs text-destructive">{pf.error}</p>}
               </div>
               <span className="text-xs text-muted-foreground">
                 {pf.error ? "Error" : `${pf.progress}%`}

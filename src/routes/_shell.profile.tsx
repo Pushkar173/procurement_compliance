@@ -2,13 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { KeyRound, Mail, Shield, User } from "lucide-react";
 
 import { Pill } from "@/components/common/badges";
-import {
-  Btn,
-  DemoNotice,
-  KeyValue,
-  PageHeader,
-  Panel,
-} from "@/components/common/primitives";
+import { Btn, DemoNotice, KeyValue, PageHeader, Panel } from "@/components/common/primitives";
 import { ROLE_LABEL } from "@/data/demoData";
 import { useStore } from "@/store/app-store";
 import { toast } from "sonner";
@@ -77,7 +71,11 @@ function ProfilePage() {
           <Btn
             variant="outline"
             size="sm"
-            onClick={() => toast.info("Password change is a demo action", { description: "Connect to Supabase to enable real authentication." })}
+            onClick={() =>
+              toast.info("Password change is a demo action", {
+                description: "Connect to Supabase to enable real authentication.",
+              })
+            }
           >
             Change Password
           </Btn>
@@ -85,7 +83,8 @@ function ProfilePage() {
         <div className="flex items-start gap-2 rounded-md border border-border bg-muted/30 px-3 py-2.5">
           <Shield className="mt-0.5 size-4 text-muted-foreground shrink-0" />
           <p className="text-xs text-muted-foreground">
-            This is a mock authentication session. In production, authentication is handled by Supabase Auth with JWT tokens and automatic session refresh.
+            This is a mock authentication session. In production, authentication is handled by
+            Supabase Auth with JWT tokens and automatic session refresh.
           </p>
         </div>
       </Panel>

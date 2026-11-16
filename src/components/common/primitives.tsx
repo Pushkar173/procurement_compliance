@@ -92,7 +92,10 @@ export function StatCard({
 
   if (!to) return body;
   return (
-    <Link to={to} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
+    <Link
+      to={to}
+      className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+    >
       {body}
     </Link>
   );
@@ -107,7 +110,14 @@ export function ProgressBar({
   label?: string;
   className?: string;
 }) {
-  const tone = value >= 85 ? "bg-success" : value >= 60 ? "bg-primary" : value >= 40 ? "bg-warning" : "bg-destructive";
+  const tone =
+    value >= 85
+      ? "bg-success"
+      : value >= 60
+        ? "bg-primary"
+        : value >= 40
+          ? "bg-warning"
+          : "bg-destructive";
   return (
     <div className={cn("w-full", className)}>
       {label && (
@@ -258,9 +268,9 @@ export function DemoNotice({ children }: { children?: React.ReactNode }) {
       <p>
         {children ?? (
           <>
-            <span className="font-semibold">DEMO DATA.</span> All records shown are fictional samples
-            created for an academic prototype. They are not actual government documents, circulars or
-            legal instruments.
+            <span className="font-semibold">DEMO DATA.</span> All records shown are fictional
+            samples created for an academic prototype. They are not actual government documents,
+            circulars or legal instruments.
           </>
         )}
       </p>
@@ -364,7 +374,8 @@ export function Btn({
   const variants = {
     primary: "bg-primary text-primary-foreground hover:bg-primary/90 border-transparent",
     outline: "bg-card text-foreground border-input hover:bg-accent hover:text-accent-foreground",
-    ghost: "bg-transparent text-muted-foreground border-transparent hover:bg-accent hover:text-accent-foreground",
+    ghost:
+      "bg-transparent text-muted-foreground border-transparent hover:bg-accent hover:text-accent-foreground",
     subtle: "bg-secondary text-secondary-foreground border-transparent hover:bg-accent",
     danger: "bg-destructive text-destructive-foreground hover:bg-destructive/90 border-transparent",
   };
@@ -437,14 +448,7 @@ export function Modal({
 }
 
 export function WorkflowStrip({ active }: { active?: string }) {
-  const steps = [
-    "Regulation",
-    "Requirement",
-    "Tender / Contract",
-    "Evidence",
-    "Status",
-    "Report",
-  ];
+  const steps = ["Regulation", "Requirement", "Tender / Contract", "Evidence", "Status", "Report"];
   return (
     <div className="table-scroll">
       <ol className="flex min-w-max items-center gap-1.5 text-xs">

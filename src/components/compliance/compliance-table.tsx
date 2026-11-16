@@ -1,4 +1,12 @@
-import { ClipboardList, Download, ExternalLink, Eye, Paperclip, PencilLine, Plus } from "lucide-react";
+import {
+  ClipboardList,
+  Download,
+  ExternalLink,
+  Eye,
+  Paperclip,
+  PencilLine,
+  Plus,
+} from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
@@ -15,11 +23,7 @@ import {
   Th,
   textareaClass,
 } from "@/components/common/primitives";
-import {
-  COMPLIANCE_STATUSES,
-  type ComplianceItem,
-  type ComplianceStatus,
-} from "@/data/demoData";
+import { COMPLIANCE_STATUSES, type ComplianceItem, type ComplianceStatus } from "@/data/demoData";
 import { compliancePercent, useStore } from "@/store/app-store";
 import { EvidenceUploader } from "@/components/compliance/evidence-uploader";
 import type { EvidenceFile } from "@/lib/api/evidence";
@@ -61,9 +65,18 @@ export function ComplianceProgress({ items }: { items: ComplianceItem[] }) {
       </div>
       <ProgressBar value={compliancePercent(items)} />
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-        <span><span className="mr-1 inline-block size-2 rounded-full bg-success" />Found — requirement addressed</span>
-        <span><span className="mr-1 inline-block size-2 rounded-full bg-warning" />Needs Review — verify manually</span>
-        <span><span className="mr-1 inline-block size-2 rounded-full bg-destructive" />Missing — action needed</span>
+        <span>
+          <span className="mr-1 inline-block size-2 rounded-full bg-success" />
+          Found — requirement addressed
+        </span>
+        <span>
+          <span className="mr-1 inline-block size-2 rounded-full bg-warning" />
+          Needs Review — verify manually
+        </span>
+        <span>
+          <span className="mr-1 inline-block size-2 rounded-full bg-destructive" />
+          Missing — action needed
+        </span>
       </div>
     </div>
   );
@@ -85,7 +98,11 @@ export function ComplianceTable({
   const [editing, setEditing] = useState<ComplianceItem | null>(null);
   const [adding, setAdding] = useState(false);
   const [sourceView, setSourceView] = useState<string | null>(null);
-  const [viewingEvidence, setViewingEvidence] = useState<{ name: string; url: string; type: string } | null>(null);
+  const [viewingEvidence, setViewingEvidence] = useState<{
+    name: string;
+    url: string;
+    type: string;
+  } | null>(null);
 
   const editable = role !== "auditor" && can("edit");
   const doc = (id: string) => documents.find((d) => d.id === id);
@@ -175,7 +192,14 @@ export function ComplianceTable({
                       onClick={() => {
                         // Show evidence in viewer — in mock mode, just show the file name
                         const ext = c.evidence.split(".").pop()?.toLowerCase();
-                        const mimeType = ext === "pdf" ? "application/pdf" : ext === "png" ? "image/png" : ext === "jpg" || ext === "jpeg" ? "image/jpeg" : "application/octet-stream";
+                        const mimeType =
+                          ext === "pdf"
+                            ? "application/pdf"
+                            : ext === "png"
+                              ? "image/png"
+                              : ext === "jpg" || ext === "jpeg"
+                                ? "image/jpeg"
+                                : "application/octet-stream";
                         setViewingEvidence({ name: c.evidence, url: "", type: mimeType });
                       }}
                       className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
@@ -199,7 +223,12 @@ export function ComplianceTable({
                 </Td>
                 <Td className="max-w-56 text-xs text-muted-foreground">{c.remarks || "—"}</Td>
                 <Td className="text-right">
-                  <Btn size="sm" variant="outline" disabled={!editable} onClick={() => setEditing(c)}>
+                  <Btn
+                    size="sm"
+                    variant="outline"
+                    disabled={!editable}
+                    onClick={() => setEditing(c)}
+                  >
                     <PencilLine className="size-3.5" /> Update
                   </Btn>
                 </Td>
@@ -279,10 +308,7 @@ export function ComplianceTable({
       </Modal>
 
       {/* Evidence Viewer Modal */}
-      <EvidenceViewerModal
-        evidence={viewingEvidence}
-        onClose={() => setViewingEvidence(null)}
-      />
+      <EvidenceViewerModal evidence={viewingEvidence} onClose={() => setViewingEvidence(null)} />
     </div>
   );
 }
@@ -302,14 +328,16 @@ function UpdateComplianceModal({
   const [evidenceFiles, setEvidenceFiles] = useState<EvidenceFile[]>(
     // Seed from existing evidence string (mock mode)
     item.evidence
-      ? [{
-          name: item.evidence,
-          path: `${item.id}/${item.evidence}`,
-          size: 0,
-          type: item.evidence.endsWith(".pdf") ? "application/pdf" : "image/jpeg",
-          url: "",
-          uploadedAt: new Date().toISOString(),
-        }]
+      ? [
+          {
+            name: item.evidence,
+            path: `${item.id}/${item.evidence}`,
+            size: 0,
+            type: item.evidence.endsWith(".pdf") ? "application/pdf" : "image/jpeg",
+            url: "",
+            uploadedAt: new Date().toISOString(),
+          },
+        ]
       : [],
   );
   const [responsible, setResponsible] = useState(item.responsible);
@@ -336,12 +364,17 @@ function UpdateComplianceModal({
     onSave({
       status,
       remarks: remarks.trim(),
-      evidence: evidenceFiles.length > 0 ? evidenceFiles.map((f) => f.name).join(", ") : evidence.trim(),
+      evidence:
+        evidenceFiles.length > 0 ? evidenceFiles.map((f) => f.name).join(", ") : evidence.trim(),
       responsible: responsible.trim(),
       completionDate:
         status === "Compliant"
           ? completionDate ||
-            new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+            new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
           : "",
       applicable: status !== "Not Applicable",
       includedInTender,
@@ -367,8 +400,8 @@ function UpdateComplianceModal({
     >
       <div className="space-y-4">
         <div className="rounded-md border border-border bg-muted/40 px-3.5 py-3 text-xs text-muted-foreground">
-          Source regulation: <span className="font-medium text-foreground">{item.sourceDocId}</span> · Current
-          status: <span className="font-medium text-foreground">{item.status}</span>
+          Source regulation: <span className="font-medium text-foreground">{item.sourceDocId}</span>{" "}
+          · Current status: <span className="font-medium text-foreground">{item.status}</span>
         </div>
 
         <Field label="Compliance Status" required error={error}>
@@ -377,7 +410,9 @@ function UpdateComplianceModal({
               <label
                 key={s}
                 className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors ${
-                  status === s ? "border-primary bg-primary/5 font-medium" : "border-border hover:bg-accent/50"
+                  status === s
+                    ? "border-primary bg-primary/5 font-medium"
+                    : "border-border hover:bg-accent/50"
                 }`}
               >
                 <input
@@ -389,7 +424,9 @@ function UpdateComplianceModal({
                 />
                 {s}
                 {STATUS_EXPLANATIONS[s] && s !== STATUS_EXPLANATIONS[s].label && (
-                  <span className="ml-1 text-[10px] font-normal text-muted-foreground">({STATUS_EXPLANATIONS[s].label})</span>
+                  <span className="ml-1 text-[10px] font-normal text-muted-foreground">
+                    ({STATUS_EXPLANATIONS[s].label})
+                  </span>
                 )}
               </label>
             ))}
@@ -407,10 +444,19 @@ function UpdateComplianceModal({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Responsible Person">
-            <input className={inputClass} value={responsible} onChange={(e) => setResponsible(e.target.value)} />
+            <input
+              className={inputClass}
+              value={responsible}
+              onChange={(e) => setResponsible(e.target.value)}
+            />
           </Field>
           <Field label="Completion Date" hint="Applies when the status is Compliant">
-            <input className={inputClass} value={completionDate} onChange={(e) => setCompletionDate(e.target.value)} placeholder="02 Oct 2026" />
+            <input
+              className={inputClass}
+              value={completionDate}
+              onChange={(e) => setCompletionDate(e.target.value)}
+              placeholder="02 Oct 2026"
+            />
           </Field>
         </div>
 
@@ -425,7 +471,12 @@ function UpdateComplianceModal({
         </label>
 
         <Field label="Remarks">
-          <textarea className={textareaClass} value={remarks} onChange={(e) => setRemarks(e.target.value)} placeholder="Observation, pending action or justification…" />
+          <textarea
+            className={textareaClass}
+            value={remarks}
+            onChange={(e) => setRemarks(e.target.value)}
+            placeholder="Observation, pending action or justification…"
+          />
         </Field>
       </div>
     </Modal>
@@ -487,10 +538,19 @@ function AddRequirementModal({
     >
       <div className="space-y-4">
         <Field label="Requirement" required error={errors.requirement}>
-          <textarea className={textareaClass} value={requirement} onChange={(e) => setRequirement(e.target.value)} placeholder="Describe what must be followed…" />
+          <textarea
+            className={textareaClass}
+            value={requirement}
+            onChange={(e) => setRequirement(e.target.value)}
+            placeholder="Describe what must be followed…"
+          />
         </Field>
         <Field label="Source Regulation" required error={errors.sourceDocId}>
-          <select className={inputClass} value={sourceDocId} onChange={(e) => setSourceDocId(e.target.value)}>
+          <select
+            className={inputClass}
+            value={sourceDocId}
+            onChange={(e) => setSourceDocId(e.target.value)}
+          >
             <option value="">Select document…</option>
             {documents
               .filter((d) => d.status === "Active")
@@ -503,7 +563,11 @@ function AddRequirementModal({
         </Field>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Initial Status">
-            <select className={inputClass} value={status} onChange={(e) => setStatus(e.target.value as ComplianceStatus)}>
+            <select
+              className={inputClass}
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ComplianceStatus)}
+            >
               {COMPLIANCE_STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -512,10 +576,20 @@ function AddRequirementModal({
             </select>
           </Field>
           <Field label="Due Date">
-            <input className={inputClass} value={dueDate} onChange={(e) => setDueDate(e.target.value)} placeholder="10 Oct 2026" />
+            <input
+              className={inputClass}
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              placeholder="10 Oct 2026"
+            />
           </Field>
           <Field label="Responsible">
-            <input className={inputClass} value={responsible} onChange={(e) => setResponsible(e.target.value)} placeholder="Officer name" />
+            <input
+              className={inputClass}
+              value={responsible}
+              onChange={(e) => setResponsible(e.target.value)}
+              placeholder="Officer name"
+            />
           </Field>
         </div>
       </div>
@@ -584,8 +658,8 @@ function EvidenceViewerModal({
             <Eye className="mx-auto size-10 text-muted-foreground/40" />
             <p className="mt-3 text-sm font-medium">{evidence.name}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              File preview not available in demo mode.
-              Connect a Supabase project to enable secure file viewing and downloads.
+              File preview not available in demo mode. Connect a Supabase project to enable secure
+              file viewing and downloads.
             </p>
           </div>
         )}

@@ -137,12 +137,18 @@ function ReportsPage() {
       </Panel>
 
       {/* Export Buttons */}
-      <Panel title="Data Exports" description="Download filtered data as CSV spreadsheets" bodyClassName="p-5">
+      <Panel
+        title="Data Exports"
+        description="Download filtered data as CSV spreadsheets"
+        bodyClassName="p-5"
+      >
         <div className="grid gap-3 sm:grid-cols-3">
           <button
             onClick={() => {
               exportTendersCsv(filteredTenders);
-              toast.success("Tenders CSV downloaded", { description: `${filteredTenders.length} records exported.` });
+              toast.success("Tenders CSV downloaded", {
+                description: `${filteredTenders.length} records exported.`,
+              });
             }}
             className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent/50"
           >
@@ -151,14 +157,18 @@ function ReportsPage() {
             </div>
             <div>
               <p className="text-sm font-semibold">Tenders List</p>
-              <p className="text-xs text-muted-foreground">{filteredTenders.length} records · CSV</p>
+              <p className="text-xs text-muted-foreground">
+                {filteredTenders.length} records · CSV
+              </p>
             </div>
           </button>
 
           <button
             onClick={() => {
               exportContractsCsv(filteredContracts, getContractCompliance, compliancePercent);
-              toast.success("Contracts CSV downloaded", { description: `${filteredContracts.length} records exported.` });
+              toast.success("Contracts CSV downloaded", {
+                description: `${filteredContracts.length} records exported.`,
+              });
             }}
             className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent/50"
           >
@@ -167,14 +177,18 @@ function ReportsPage() {
             </div>
             <div>
               <p className="text-sm font-semibold">Contracts Performance</p>
-              <p className="text-xs text-muted-foreground">{filteredContracts.length} records · CSV</p>
+              <p className="text-xs text-muted-foreground">
+                {filteredContracts.length} records · CSV
+              </p>
             </div>
           </button>
 
           <button
             onClick={() => {
               exportComplianceCsv(filteredCompliance);
-              toast.success("Compliance CSV downloaded", { description: `${filteredCompliance.length} records exported.` });
+              toast.success("Compliance CSV downloaded", {
+                description: `${filteredCompliance.length} records exported.`,
+              });
             }}
             className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-accent/50"
           >
@@ -183,7 +197,9 @@ function ReportsPage() {
             </div>
             <div>
               <p className="text-sm font-semibold">Full Compliance Matrix</p>
-              <p className="text-xs text-muted-foreground">{filteredCompliance.length} records · CSV</p>
+              <p className="text-xs text-muted-foreground">
+                {filteredCompliance.length} records · CSV
+              </p>
             </div>
           </button>
         </div>
@@ -251,7 +267,12 @@ function ReportsPage() {
                 {certItems.filter((i) => i.status === "Compliant").length} Compliant
               </Pill>
               <Pill tone="warning">
-                {certItems.filter((i) => i.status === "Pending" || i.status === "Partially Compliant").length} Pending
+                {
+                  certItems.filter(
+                    (i) => i.status === "Pending" || i.status === "Partially Compliant",
+                  ).length
+                }{" "}
+                Pending
               </Pill>
               <Pill tone="danger">
                 {certItems.filter((i) => i.status === "Non-Compliant").length} Non-Compliant
@@ -267,7 +288,8 @@ function ReportsPage() {
         <div className="px-5 py-8 text-center">
           <FileText className="mx-auto size-8 text-muted-foreground/40" />
           <p className="mt-2 text-sm text-muted-foreground">
-            Export data above to create downloadable reports. Generated files are saved to your downloads folder.
+            Export data above to create downloadable reports. Generated files are saved to your
+            downloads folder.
           </p>
         </div>
       </Panel>

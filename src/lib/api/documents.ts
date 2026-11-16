@@ -1,5 +1,8 @@
 import { supabase } from "../supabase";
+import type { Database } from "../database.types";
 import type { RegDocument } from "@/data/demoData";
+
+export type RegulatoryDocumentRow = Database["public"]["Tables"]["regulatory_documents"]["Row"];
 
 export async function listRegulatoryDocuments(): Promise<RegDocument[]> {
   const { data, error } = await supabase
@@ -21,18 +24,20 @@ export async function searchDocuments(query: string): Promise<RegDocument[]> {
   return (data || []).map(mapDbDocument);
 }
 
-function mapDbDocument(db: any): RegDocument {
+function mapDbDocument(db: RegulatoryDocumentRow): RegDocument {
   return {
     id: db.ref_number || db.id,
     title: db.title,
-    authority: db.issuing_authority,
+    authority: (db.issuing_authority as RegDocument["authority"]) || "Other Authorities",
     type: "Regulation",
+    category: db.category,
+    year: db.effective_date ? new Date(db.effective_date).getFullYear() : 2026,
     issueDate: db.effective_date ? new Date(db.effective_date).toLocaleDateString() : "",
     effectiveDate: db.effective_date ? new Date(db.effective_date).toLocaleDateString() : "",
     version: "1.0",
     status: "Active",
-    category: db.category,
-    description: db.summary,
+    description: db.summary || "",
+    summary: db.summary || "",
     applicability: "",
     requirements: [],
     stages: [],
@@ -42,5 +47,5 @@ function mapDbDocument(db: any): RegDocument {
     relatedTenders: [],
     relatedContracts: [],
     history: [],
-  } as unknown as RegDocument;
+  };
 }

@@ -216,7 +216,10 @@ export function generateNonAiFallbackReview(
       // Determine if match has strengthening terms
       let hasStrength = true;
       if (rule.strengthenTerms && rule.strengthenTerms.length > 0) {
-        const full = pages.map((p) => p.text).join(" ").toLowerCase();
+        const full = pages
+          .map((p) => p.text)
+          .join(" ")
+          .toLowerCase();
         const matches = rule.strengthenTerms.filter((t) => full.includes(t.toLowerCase()));
         hasStrength = matches.length > 0;
       }
@@ -264,7 +267,8 @@ export function generateNonAiFallbackReview(
   return {
     suggestions,
     mode: "non-ai-fallback",
-    statusMessage: "Using deterministic rule engine fallback (no external AI service configured in environment).",
+    statusMessage:
+      "Using deterministic rule engine fallback (no external AI service configured in environment).",
     timestamp: new Date().toISOString(),
     disclaimer: AI_DISCLAIMER,
   };

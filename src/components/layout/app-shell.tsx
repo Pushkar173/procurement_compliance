@@ -56,7 +56,8 @@ const adminNav: NavItem[] = [
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { user, logout, notifications, documents, tenders, contracts, theme, toggleTheme } = useStore();
+  const { user, logout, notifications, documents, tenders, contracts, theme, toggleTheme } =
+    useStore();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -76,17 +77,37 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const hits: { label: string; sub: string; to: string; kind: string }[] = [];
     documents.forEach((d) => {
       if (
-        [d.id, d.title, d.authority, d.type, d.category, d.description].join(" ").toLowerCase().includes(q)
+        [d.id, d.title, d.authority, d.type, d.category, d.description]
+          .join(" ")
+          .toLowerCase()
+          .includes(q)
       )
-        hits.push({ label: `${d.id} — ${d.title}`, sub: `${d.type} · ${d.authority}`, to: `/documents?q=${encodeURIComponent(query)}`, kind: "Document" });
+        hits.push({
+          label: `${d.id} — ${d.title}`,
+          sub: `${d.type} · ${d.authority}`,
+          to: `/documents?q=${encodeURIComponent(query)}`,
+          kind: "Document",
+        });
     });
     tenders.forEach((t) => {
-      if ([t.id, t.title, t.department, t.status, t.description].join(" ").toLowerCase().includes(q))
-        hits.push({ label: `${t.id} — ${t.title}`, sub: `Tender · ${t.department}`, to: `/tenders/${t.id}`, kind: "Tender" });
+      if (
+        [t.id, t.title, t.department, t.status, t.description].join(" ").toLowerCase().includes(q)
+      )
+        hits.push({
+          label: `${t.id} — ${t.title}`,
+          sub: `Tender · ${t.department}`,
+          to: `/tenders/${t.id}`,
+          kind: "Tender",
+        });
     });
     contracts.forEach((c) => {
       if ([c.id, c.name, c.vendor, c.tenderId, c.status].join(" ").toLowerCase().includes(q))
-        hits.push({ label: `${c.id} — ${c.name}`, sub: `Contract · ${c.vendor}`, to: `/contracts/${c.id}`, kind: "Contract" });
+        hits.push({
+          label: `${c.id} — ${c.name}`,
+          sub: `Contract · ${c.vendor}`,
+          to: `/contracts/${c.id}`,
+          kind: "Contract",
+        });
     });
     return hits.slice(0, 8);
   }, [query, documents, tenders, contracts]);
@@ -103,7 +124,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <ShieldCheck className="size-5" />
         </span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">ProcureComply</p>
+          <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
+            ProcureComply
+          </p>
           <p className="truncate text-[11px] text-sidebar-foreground/70">Compliance & Contracts</p>
         </div>
         <button
@@ -256,7 +279,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </Pill>
                         <span className="min-w-0">
                           <span className="block truncate text-sm font-medium">{r.label}</span>
-                          <span className="block truncate text-xs text-muted-foreground">{r.sub}</span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {r.sub}
+                          </span>
                         </span>
                       </button>
                     ))
@@ -290,7 +315,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-2.5 rounded-md border border-input px-2.5 py-1.5 transition-colors hover:bg-accent"
               >
                 <span className="grid size-7 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                  {user?.name.split(" ").map((p) => p[0]).slice(0, 2).join("")}
+                  {user?.name
+                    .split(" ")
+                    .map((p) => p[0])
+                    .slice(0, 2)
+                    .join("")}
                 </span>
                 <span className="hidden text-left leading-tight sm:block">
                   <span className="block text-xs font-semibold">{user?.name}</span>
@@ -310,7 +339,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className={cn("mx-auto w-full max-w-[1500px] space-y-6 px-4 py-6 sm:px-6")}>{children}</main>
+        <main className={cn("mx-auto w-full max-w-[1500px] space-y-6 px-4 py-6 sm:px-6")}>
+          {children}
+        </main>
 
         <footer className="mt-4 border-t border-border px-4 py-5 text-center text-xs text-muted-foreground sm:px-6">
           <p className="font-medium text-foreground">

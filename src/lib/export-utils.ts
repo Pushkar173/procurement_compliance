@@ -47,12 +47,28 @@ function downloadBlob(content: string, filename: string, mimeType = "text/csv;ch
  */
 export function exportTendersCsv(tenders: Tender[]) {
   const headers = [
-    "Tender ID", "Title", "Department", "Type", "Value (₹)",
-    "Issue Date", "Closing Date", "Status", "Stage", "Officer",
+    "Tender ID",
+    "Title",
+    "Department",
+    "Type",
+    "Value (₹)",
+    "Issue Date",
+    "Closing Date",
+    "Status",
+    "Stage",
+    "Officer",
   ];
   const rows = tenders.map((t) => [
-    t.id, t.title, t.department, t.type, String(t.value),
-    t.issueDate, t.closingDate, t.status, t.stage, t.officer,
+    t.id,
+    t.title,
+    t.department,
+    t.type,
+    String(t.value),
+    t.issueDate,
+    t.closingDate,
+    t.status,
+    t.stage,
+    t.officer,
   ]);
   const csv = buildCsv(headers, rows);
   downloadBlob(csv, `Tenders_Export_${new Date().toISOString().slice(0, 10)}.csv`);
@@ -67,17 +83,39 @@ export function exportContractsCsv(
   compliancePct: (items: ComplianceItem[]) => number,
 ) {
   const headers = [
-    "Contract ID", "Name", "Vendor", "Tender ID", "Value (₹)",
-    "Start Date", "End Date", "Status", "Payment", "Department",
-    "Manager", "Compliance %", "Total Requirements", "Compliant",
+    "Contract ID",
+    "Name",
+    "Vendor",
+    "Tender ID",
+    "Value (₹)",
+    "Start Date",
+    "End Date",
+    "Status",
+    "Payment",
+    "Department",
+    "Manager",
+    "Compliance %",
+    "Total Requirements",
+    "Compliant",
   ];
   const rows = contracts.map((c) => {
     const items = getCompliance(c.id);
     const compliant = items.filter((i) => i.status === "Compliant").length;
     return [
-      c.id, c.name, c.vendor, c.tenderId, String(c.value),
-      c.startDate, c.endDate, c.status, c.paymentStatus, c.department,
-      c.manager, String(compliancePct(items)), String(items.length), String(compliant),
+      c.id,
+      c.name,
+      c.vendor,
+      c.tenderId,
+      String(c.value),
+      c.startDate,
+      c.endDate,
+      c.status,
+      c.paymentStatus,
+      c.department,
+      c.manager,
+      String(compliancePct(items)),
+      String(items.length),
+      String(compliant),
     ];
   });
   const csv = buildCsv(headers, rows);
@@ -89,14 +127,36 @@ export function exportContractsCsv(
  */
 export function exportComplianceCsv(items: ComplianceItem[]) {
   const headers = [
-    "ID", "Requirement", "Source Document", "Tender ID", "Contract ID",
-    "Status", "Applicable", "Included in Tender", "Evidence",
-    "Responsible", "Due Date", "Completion Date", "Category", "Remarks",
+    "ID",
+    "Requirement",
+    "Source Document",
+    "Tender ID",
+    "Contract ID",
+    "Status",
+    "Applicable",
+    "Included in Tender",
+    "Evidence",
+    "Responsible",
+    "Due Date",
+    "Completion Date",
+    "Category",
+    "Remarks",
   ];
   const rows = items.map((c) => [
-    c.id, c.requirement, c.sourceDocId, c.tenderId ?? "", c.contractId ?? "",
-    c.status, String(c.applicable), String(c.includedInTender), c.evidence,
-    c.responsible, c.dueDate, c.completionDate, c.category, c.remarks,
+    c.id,
+    c.requirement,
+    c.sourceDocId,
+    c.tenderId ?? "",
+    c.contractId ?? "",
+    c.status,
+    String(c.applicable),
+    String(c.includedInTender),
+    c.evidence,
+    c.responsible,
+    c.dueDate,
+    c.completionDate,
+    c.category,
+    c.remarks,
   ]);
   const csv = buildCsv(headers, rows);
   downloadBlob(csv, `Compliance_Matrix_${new Date().toISOString().slice(0, 10)}.csv`);
@@ -106,21 +166,52 @@ export function exportComplianceCsv(items: ComplianceItem[]) {
  * Export audit trail as CSV/JSON.
  */
 export function exportAuditCsv(
-  events: { id: string; user: string; role: string; action: string; object: string; objectType: string; date: string; time: string; previous?: string; next?: string }[],
+  events: {
+    id: string;
+    user: string;
+    role: string;
+    action: string;
+    object: string;
+    objectType: string;
+    date: string;
+    time: string;
+    previous?: string;
+    next?: string;
+  }[],
   format: "csv" | "json" = "csv",
 ) {
   if (format === "json") {
     const json = JSON.stringify(events, null, 2);
-    downloadBlob(json, `Audit_Trail_${new Date().toISOString().slice(0, 10)}.json`, "application/json");
+    downloadBlob(
+      json,
+      `Audit_Trail_${new Date().toISOString().slice(0, 10)}.json`,
+      "application/json",
+    );
     return;
   }
   const headers = [
-    "Event ID", "User", "Role", "Action", "Object", "Object Type",
-    "Date", "Time", "Previous Value", "New Value",
+    "Event ID",
+    "User",
+    "Role",
+    "Action",
+    "Object",
+    "Object Type",
+    "Date",
+    "Time",
+    "Previous Value",
+    "New Value",
   ];
   const rows = events.map((e) => [
-    e.id, e.user, e.role, e.action, e.object, e.objectType,
-    e.date, e.time, e.previous ?? "", e.next ?? "",
+    e.id,
+    e.user,
+    e.role,
+    e.action,
+    e.object,
+    e.objectType,
+    e.date,
+    e.time,
+    e.previous ?? "",
+    e.next ?? "",
   ]);
   const csv = buildCsv(headers, rows);
   downloadBlob(csv, `Audit_Trail_${new Date().toISOString().slice(0, 10)}.csv`);
@@ -138,16 +229,25 @@ export function generateComplianceCertificatePdf(
 ) {
   const satisfiedClauses = items
     .filter((i) => i.status === "Compliant")
-    .map((i) => `<li style="margin-bottom:4px">${i.requirement} <em style="color:#666">(${i.sourceDocId})</em></li>`)
+    .map(
+      (i) =>
+        `<li style="margin-bottom:4px">${i.requirement} <em style="color:#666">(${i.sourceDocId})</em></li>`,
+    )
     .join("");
 
   const pendingClauses = items
     .filter((i) => i.status !== "Compliant" && i.status !== "Not Applicable")
-    .map((i) => `<li style="margin-bottom:4px">${i.requirement} — <strong>${i.status}</strong></li>`)
+    .map(
+      (i) => `<li style="margin-bottom:4px">${i.requirement} — <strong>${i.status}</strong></li>`,
+    )
     .join("");
 
   const now = new Date();
-  const dateStr = now.toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
+  const dateStr = now.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
 
   const html = `<!DOCTYPE html>
 <html>
@@ -208,11 +308,15 @@ export function generateComplianceCertificatePdf(
     ${satisfiedClauses ? `<ul>${satisfiedClauses}</ul>` : "<p><em>None</em></p>"}
   </div>
 
-  ${pendingClauses ? `
+  ${
+    pendingClauses
+      ? `
   <div class="section">
     <h2>⚠ Pending / Non-Compliant Items (${items.filter((i) => i.status !== "Compliant" && i.status !== "Not Applicable").length})</h2>
     <ul>${pendingClauses}</ul>
-  </div>` : ""}
+  </div>`
+      : ""
+  }
 
   <div class="signature">
     <div class="sig-block">

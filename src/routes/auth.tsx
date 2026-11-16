@@ -47,7 +47,9 @@ function AuthPage() {
           <span className="grid size-9 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
             <ShieldCheck className="size-5" />
           </span>
-          <span className="text-sm font-semibold text-sidebar-accent-foreground">ProcureComply</span>
+          <span className="text-sm font-semibold text-sidebar-accent-foreground">
+            ProcureComply
+          </span>
         </Link>
         <div className="max-w-md">
           <h2 className="font-serif text-3xl leading-snug text-sidebar-accent-foreground">
@@ -60,9 +62,7 @@ function AuthPage() {
         <div className="w-full max-w-md">
           <div className="mb-6 text-center lg:text-left">
             <h1 className="text-2xl font-semibold tracking-tight">ProcureComply</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Mock Persona Login
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Mock Persona Login</p>
           </div>
 
           <form onSubmit={submit} className="panel space-y-4 p-6">

@@ -1,5 +1,10 @@
 import { supabase } from "../supabase";
-import type { Tender } from "@/data/demoData";
+import type { Database } from "../database.types";
+import type { Tender, TenderStatus } from "@/data/demoData";
+
+export type TenderRow = Database["public"]["Tables"]["tenders"]["Row"];
+export type TenderInsert = Database["public"]["Tables"]["tenders"]["Insert"];
+export type TenderUpdate = Database["public"]["Tables"]["tenders"]["Update"];
 
 export async function listTenders(): Promise<Tender[]> {
   const { data, error } = await supabase
@@ -12,30 +17,22 @@ export async function listTenders(): Promise<Tender[]> {
 }
 
 export async function getTenderById(id: string): Promise<Tender> {
-  const { data, error } = await supabase
-    .from("tenders")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const { data, error } = await supabase.from("tenders").select("*").eq("id", id).single();
 
   if (error) throw error;
   return mapDbTenderToTender(data);
 }
 
-export async function createTender(tender: any) {
-  const { data, error } = await supabase
-    .from("tenders")
-    .insert(tender)
-    .select()
-    .single();
+export async function createTender(tender: TenderInsert): Promise<Tender> {
+  const { data, error } = await supabase.from("tenders").insert(tender).select().single();
 
   if (error) throw error;
   return mapDbTenderToTender(data);
 }
 
-export async function updateTenderStatus(id: string, status: string) {
-  const { data, error } = await (supabase
-    .from("tenders") as any)
+export async function updateTenderStatus(id: string, status: string): Promise<Tender> {
+  const { data, error } = await supabase
+    .from("tenders")
     .update({ status })
     .eq("id", id)
     .select()
@@ -46,22 +43,21 @@ export async function updateTenderStatus(id: string, status: string) {
 }
 
 // Temporary mapper to bridge DB schema and demoData frontend type
-function mapDbTenderToTender(db: any): Tender {
+function mapDbTenderToTender(db: TenderRow): Tender {
   return {
     id: db.tender_id || db.id,
     title: db.title,
-    category: db.category,
+    department: db.department || "",
     type: db.procurement_method || "Open",
-    department: db.department,
-    value: Number(db.estimated_value),
+    value: Number(db.estimated_value || 0),
     issueDate: db.created_at ? new Date(db.created_at).toLocaleDateString() : "",
     closingDate: db.deadline ? new Date(db.deadline).toLocaleDateString() : "",
     evaluationDate: "", // missing in db
-    status: db.status,
-    stage: "Preparation", 
+    status: (db.status as TenderStatus) || "Draft",
+    stage: "Preparation",
     description: db.title,
     regulationIds: [], // array in db?
     documents: [],
-    officer: db.created_by,
-  } as Tender;
+    officer: db.created_by || "",
+  };
 }

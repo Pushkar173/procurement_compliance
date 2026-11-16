@@ -103,7 +103,8 @@ const FINDING_META: Record<
   "Needs Review": {
     tone: "warning",
     icon: TriangleAlert,
-    explanation: "Could not determine automatically or details are incomplete. Manual review recommended.",
+    explanation:
+      "Could not determine automatically or details are incomplete. Manual review recommended.",
   },
   "Not Applicable": {
     tone: "neutral",
@@ -116,12 +117,14 @@ const SAMPLE_PDFS = [
   {
     href: "/samples/sample-tender-1-smart-classroom.pdf",
     title: "Sample Tender 1 — Smart Classroom Equipment",
-    description: "Budget, eligibility & specs present. Missing: environmental, accessibility, penalty clauses.",
+    description:
+      "Budget, eligibility & specs present. Missing: environmental, accessibility, penalty clauses.",
   },
   {
     href: "/samples/sample-tender-2-road-resurfacing.pdf",
     title: "Sample Tender 2 — Municipal Road Resurfacing",
-    description: "Scope, penalty & dispute clauses present. Missing: safety, insurance, subcontracting.",
+    description:
+      "Scope, penalty & dispute clauses present. Missing: safety, insurance, subcontracting.",
   },
   {
     href: "/samples/how-tender-audit-works.pdf",
@@ -131,7 +134,8 @@ const SAMPLE_PDFS = [
   {
     href: "/samples/viva-demo-guide.pdf",
     title: "Viva & Demo Guide",
-    description: "Suggested walkthrough, expected findings for each sample, and project limitations.",
+    description:
+      "Suggested walkthrough, expected findings for each sample, and project limitations.",
   },
 ];
 
@@ -171,18 +175,16 @@ function AuditTenderPage() {
   const [aiReport, setAiReport] = useState<AiReviewReport | null>(null);
 
   /* derived */
-  const activeDocs = useMemo(
-    () => documents.filter((d) => d.status === "Active"),
-    [documents],
-  );
+  const activeDocs = useMemo(() => documents.filter((d) => d.status === "Active"), [documents]);
 
   const matchedDocs = useMemo(
     () =>
-      activeDocs.filter(
-        (d) =>
-          d.stages.some((s) =>
-            ["Planning", "Tender Preparation", "Tender Publication", "Evaluation", "Award"].includes(s),
+      activeDocs.filter((d) =>
+        d.stages.some((s) =>
+          ["Planning", "Tender Preparation", "Tender Publication", "Evaluation", "Award"].includes(
+            s,
           ),
+        ),
       ),
     [activeDocs],
   );
@@ -248,56 +250,53 @@ function AuditTenderPage() {
   const set = <K extends keyof typeof form>(key: K, v: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [key]: v }));
 
-  const runExtraction = useCallback(
-    async (file: File) => {
-      setExtracting(true);
-      setPdfError(null);
-      setPdfResult(null);
-      setShowExtractedText(false);
+  const runExtraction = useCallback(async (file: File) => {
+    setExtracting(true);
+    setPdfError(null);
+    setPdfResult(null);
+    setShowExtractedText(false);
 
-      const result = await extractPdfText(file);
+    const result = await extractPdfText(file);
 
-      if (!result.ok) {
-        setExtracting(false);
-        setPdfError(result);
-        toast.error("PDF extraction failed", { description: result.message });
-        return;
-      }
-
-      setPdfResult(result);
-
-      // Pre-fill form from extracted info + filename
-      const nameWithoutExt = file.name.replace(/\.pdf$/i, "").replace(/[_-]+/g, " ");
-      setForm({
-        title: result.info.title || nameWithoutExt || "Untitled Tender",
-        department: DEPARTMENTS[Math.floor(Math.random() * DEPARTMENTS.length)] ?? "Information Technology",
-        type: "Open Tender (Goods)",
-        value: String(Math.floor(Math.random() * 90 + 10) * 100000),
-        issueDate: new Date().toISOString().slice(0, 10),
-        closingDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
-        description: `Procurement tender extracted from ${file.name} (${result.totalPages} pages, ${formatFileSize(result.fileSize)}). Review and edit the details below before running compliance checks.`,
-      });
-
+    if (!result.ok) {
       setExtracting(false);
-      setStep(1);
+      setPdfError(result);
+      toast.error("PDF extraction failed", { description: result.message });
+      return;
+    }
 
-      const warnings: string[] = [];
-      if (result.emptyPageNumbers.length > 0) {
-        warnings.push(
-          `${result.emptyPageNumbers.length} of ${result.totalPages} pages had no extractable text (possibly scanned/image pages).`
-        );
-      }
-      toast.success(
-        `Text extracted from ${result.totalPages} page${result.totalPages === 1 ? "" : "s"}`,
-        {
-          description: warnings.length > 0
-            ? warnings.join(" ")
-            : "Review the details and extracted text below.",
-        },
+    setPdfResult(result);
+
+    // Pre-fill form from extracted info + filename
+    const nameWithoutExt = file.name.replace(/\.pdf$/i, "").replace(/[_-]+/g, " ");
+    setForm({
+      title: result.info.title || nameWithoutExt || "Untitled Tender",
+      department:
+        DEPARTMENTS[Math.floor(Math.random() * DEPARTMENTS.length)] ?? "Information Technology",
+      type: "Open Tender (Goods)",
+      value: String(Math.floor(Math.random() * 90 + 10) * 100000),
+      issueDate: new Date().toISOString().slice(0, 10),
+      closingDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      description: `Procurement tender extracted from ${file.name} (${result.totalPages} pages, ${formatFileSize(result.fileSize)}). Review and edit the details below before running compliance checks.`,
+    });
+
+    setExtracting(false);
+    setStep(1);
+
+    const warnings: string[] = [];
+    if (result.emptyPageNumbers.length > 0) {
+      warnings.push(
+        `${result.emptyPageNumbers.length} of ${result.totalPages} pages had no extractable text (possibly scanned/image pages).`,
       );
-    },
-    [],
-  );
+    }
+    toast.success(
+      `Text extracted from ${result.totalPages} page${result.totalPages === 1 ? "" : "s"}`,
+      {
+        description:
+          warnings.length > 0 ? warnings.join(" ") : "Review the details and extracted text below.",
+      },
+    );
+  }, []);
 
   const loadSamplePdf = useCallback(
     async (href: string) => {
@@ -349,7 +348,8 @@ function AuditTenderPage() {
   const isStep1Valid = useCallback(() => {
     if (!form.title.trim()) return false;
     if (!form.department) return false;
-    if (!form.value.trim() || Number.isNaN(Number(form.value)) || Number(form.value) <= 0) return false;
+    if (!form.value.trim() || Number.isNaN(Number(form.value)) || Number(form.value) <= 0)
+      return false;
     if (!form.description.trim() || form.description.trim().length < 10) return false;
     return true;
   }, [form.title, form.department, form.value, form.description]);
@@ -359,7 +359,8 @@ function AuditTenderPage() {
     if (!form.title.trim()) e.title = "Tender title is required.";
     if (!form.department) e.department = "Select a department.";
     if (!form.value.trim()) e.value = "Estimated value is required.";
-    else if (Number.isNaN(Number(form.value)) || Number(form.value) <= 0) e.value = "Enter a positive number.";
+    else if (Number.isNaN(Number(form.value)) || Number(form.value) <= 0)
+      e.value = "Enter a positive number.";
     if (!form.description.trim() || form.description.trim().length < 10)
       e.description = "Provide a brief description (at least 10 characters).";
     setErrors(e);
@@ -397,23 +398,17 @@ function AuditTenderPage() {
 
   const updateFinding = (index: number, status: FindingStatus) => {
     setFindings((prev) =>
-      prev.map((f, i) =>
-        i === index ? { ...f, status, humanVerified: true } : f,
-      ),
+      prev.map((f, i) => (i === index ? { ...f, status, humanVerified: true } : f)),
     );
   };
 
   const updateOfficerNote = (index: number, note: string) => {
-    setFindings((prev) =>
-      prev.map((f, i) => (i === index ? { ...f, officerNotes: note } : f)),
-    );
+    setFindings((prev) => prev.map((f, i) => (i === index ? { ...f, officerNotes: note } : f)));
   };
 
   const toggleVerifyFinding = (index: number) => {
     setFindings((prev) =>
-      prev.map((f, i) =>
-        i === index ? { ...f, humanVerified: !f.humanVerified } : f,
-      ),
+      prev.map((f, i) => (i === index ? { ...f, humanVerified: !f.humanVerified } : f)),
     );
   };
 
@@ -426,7 +421,11 @@ function AuditTenderPage() {
     const tenderId = `TDR-2026-${Math.floor(Math.random() * 900) + 100}`;
     const toDisplayDate = (iso: string) =>
       iso
-        ? new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+        ? new Date(iso).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
         : "—";
 
     const tender: Tender = {
@@ -442,7 +441,15 @@ function AuditTenderPage() {
       officer: user?.name ?? "Procurement Officer",
       description: form.description.trim(),
       regulationIds: matchedDocs.map((d) => d.id),
-      documents: uploadedFile ? [{ name: uploadedFile.name, date: toDisplayDate(form.issueDate), by: user?.name ?? "Officer" }] : [],
+      documents: uploadedFile
+        ? [
+            {
+              name: uploadedFile.name,
+              date: toDisplayDate(form.issueDate),
+              by: user?.name ?? "Officer",
+            },
+          ]
+        : [],
       stage: "Tender Preparation",
     };
 
@@ -450,16 +457,21 @@ function AuditTenderPage() {
 
     findings.forEach((f) => {
       const complianceStatus =
-        f.status === "Found" ? "Compliant" as const :
-        f.status === "Missing" ? "Non-Compliant" as const :
-        f.status === "Not Applicable" ? "Not Applicable" as const :
-        "Pending" as const;
+        f.status === "Found"
+          ? ("Compliant" as const)
+          : f.status === "Missing"
+            ? ("Non-Compliant" as const)
+            : f.status === "Not Applicable"
+              ? ("Not Applicable" as const)
+              : ("Pending" as const);
       addCompliance({
         requirement: f.ruleName,
         sourceDocId: f.source.name,
         applicable: f.status !== "Not Applicable",
         includedInTender: f.status === "Found",
-        evidence: f.evidence[0] ? `Page ${f.evidence[0].pageNumber}: ${f.evidence[0].text.slice(0, 100)}` : "",
+        evidence: f.evidence[0]
+          ? `Page ${f.evidence[0].pageNumber}: ${f.evidence[0].text.slice(0, 100)}`
+          : "",
         status: complianceStatus,
         remarks: `${f.explanation} (Confidence: ${f.confidence}${f.humanVerified ? ", Verified by reviewer" : ""})`,
         responsible: user?.name ?? "Procurement Officer",
@@ -503,9 +515,10 @@ function AuditTenderPage() {
       />
 
       <DemoNotice>
-        <span className="font-semibold">DECISION SUPPORT ONLY.</span> Automated rule checking provides decision support
-        and does not constitute legal advice or an official regulatory clearance. All findings, page evidence, and missing clauses
-        must be reviewed and verified by a qualified officer. Sources (official references vs demo rules) are marked throughout.
+        <span className="font-semibold">DECISION SUPPORT ONLY.</span> Automated rule checking
+        provides decision support and does not constitute legal advice or an official regulatory
+        clearance. All findings, page evidence, and missing clauses must be reviewed and verified by
+        a qualified officer. Sources (official references vs demo rules) are marked throughout.
       </DemoNotice>
 
       {/* step indicator */}
@@ -517,7 +530,9 @@ function AuditTenderPage() {
             return (
               <li key={label} className="flex items-center">
                 <button
-                  onClick={() => { if (done) setStep(i); }}
+                  onClick={() => {
+                    if (done) setStep(i);
+                  }}
                   disabled={!done}
                   className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                     active
@@ -529,11 +544,11 @@ function AuditTenderPage() {
                 >
                   <span
                     className={`grid size-5 place-items-center rounded-full text-[10px] font-bold ${
-                    active
-                      ? "bg-primary text-primary-foreground"
-                      : done
-                        ? "bg-success text-white"
-                        : "bg-muted text-muted-foreground"
+                      active
+                        ? "bg-primary text-primary-foreground"
+                        : done
+                          ? "bg-success text-white"
+                          : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {done ? <Check className="size-3" /> : i + 1}
@@ -550,19 +565,21 @@ function AuditTenderPage() {
       </div>
 
       {/* step content */}
-      {step === 0 && <StepUpload
-        fileRef={fileRef}
-        uploadedFile={uploadedFile}
-        extracting={extracting}
-        dragOver={dragOver}
-        setDragOver={setDragOver}
-        handleDrop={handleDrop}
-        handleFiles={handleFiles}
-        onSelectSample={loadSamplePdf}
-        pdfResult={pdfResult}
-        pdfError={pdfError}
-        onProceed={() => setStep(1)}
-      />}
+      {step === 0 && (
+        <StepUpload
+          fileRef={fileRef}
+          uploadedFile={uploadedFile}
+          extracting={extracting}
+          dragOver={dragOver}
+          setDragOver={setDragOver}
+          handleDrop={handleDrop}
+          handleFiles={handleFiles}
+          onSelectSample={loadSamplePdf}
+          pdfResult={pdfResult}
+          pdfError={pdfError}
+          onProceed={() => setStep(1)}
+        />
+      )}
 
       {step === 1 && (
         <StepReview
@@ -672,7 +689,10 @@ function StepUpload({
   onProceed: () => void;
 }) {
   return (
-    <Panel title="Step 1 — Upload Tender Document" description="Upload your tender document (PDF) to begin the compliance audit. Text will be extracted locally in your browser — nothing is sent externally.">
+    <Panel
+      title="Step 1 — Upload Tender Document"
+      description="Upload your tender document (PDF) to begin the compliance audit. Text will be extracted locally in your browser — nothing is sent externally."
+    >
       {extracting ? (
         <div className="flex flex-col items-center gap-4 py-12">
           <Loader2 className="size-10 animate-spin text-primary" />
@@ -699,15 +719,9 @@ function StepUpload({
                     ? "Empty file"
                     : "Could not read PDF"}
             </p>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {pdfError.message}
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{pdfError.message}</p>
           </div>
-          <Btn
-            size="sm"
-            variant="outline"
-            onClick={() => fileRef.current?.click()}
-          >
+          <Btn size="sm" variant="outline" onClick={() => fileRef.current?.click()}>
             <Upload className="size-3.5" /> Try a different file
           </Btn>
         </div>
@@ -720,15 +734,17 @@ function StepUpload({
           <p className="text-sm font-semibold">{uploadedFile.name}</p>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
             <span>{formatFileSize(pdfResult.fileSize)}</span>
-            <span>{pdfResult.totalPages} page{pdfResult.totalPages === 1 ? "" : "s"}</span>
+            <span>
+              {pdfResult.totalPages} page{pdfResult.totalPages === 1 ? "" : "s"}
+            </span>
             <span>{pdfResult.fullText.split(/\s+/).length.toLocaleString()} words extracted</span>
           </div>
           {pdfResult.emptyPageNumbers.length > 0 && (
             <p className="max-w-md text-center text-[11px] text-warning">
               <TriangleAlert className="mr-1 inline size-3" />
               {pdfResult.emptyPageNumbers.length} of {pdfResult.totalPages} page(s) had no
-              extractable text (possibly scanned/image pages). Those pages will be skipped
-              during compliance checks.
+              extractable text (possibly scanned/image pages). Those pages will be skipped during
+              compliance checks.
             </p>
           )}
           {pdfResult.info.title && (
@@ -737,24 +753,20 @@ function StepUpload({
             </p>
           )}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-            <Btn
-              onClick={onProceed}
-              className="font-medium"
-            >
+            <Btn onClick={onProceed} className="font-medium">
               Continue to Step 2 — Review Details <ArrowRight className="size-4" />
             </Btn>
-            <Btn
-              size="sm"
-              variant="outline"
-              onClick={() => fileRef.current?.click()}
-            >
+            <Btn size="sm" variant="outline" onClick={() => fileRef.current?.click()}>
               Choose different file
             </Btn>
           </div>
         </div>
       ) : (
         <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => fileRef.current?.click()}
@@ -768,9 +780,7 @@ function StepUpload({
             <Upload className="size-6" />
           </span>
           <div className="text-center">
-            <p className="text-sm font-semibold">
-              Drop your tender PDF here, or click to browse
-            </p>
+            <p className="text-sm font-semibold">Drop your tender PDF here, or click to browse</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Accepts PDF files up to 10 MB · Text is extracted in your browser
             </p>
@@ -790,11 +800,10 @@ function StepUpload({
 
       {/* ─── Try a sample PDF ─── */}
       <div className="mt-6 rounded-lg border border-dashed border-primary/30 bg-primary/3 p-5">
-        <h3 className="mb-1 text-sm font-semibold text-foreground">
-          Try a sample PDF
-        </h3>
+        <h3 className="mb-1 text-sm font-semibold text-foreground">Try a sample PDF</h3>
         <p className="mb-4 text-xs text-muted-foreground">
-          Select or download one of these fictional sample tender documents to test the complete compliance audit workflow.
+          Select or download one of these fictional sample tender documents to test the complete
+          compliance audit workflow.
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -856,7 +865,15 @@ function StepReview({
   onProceed,
   isValid,
 }: {
-  form: { title: string; department: string; type: string; value: string; issueDate: string; closingDate: string; description: string };
+  form: {
+    title: string;
+    department: string;
+    type: string;
+    value: string;
+    issueDate: string;
+    closingDate: string;
+    description: string;
+  };
   errors: Record<string, string>;
   set: <K extends keyof typeof form>(key: K, v: (typeof form)[K]) => void;
   pdfResult: PdfExtractionResult | null;
@@ -874,10 +891,14 @@ function StepReview({
   ];
 
   return (
-    <Panel title="Step 2 — Review Extracted Details" description="Review the details below. Edit anything that wasn't extracted correctly.">
+    <Panel
+      title="Step 2 — Review Extracted Details"
+      description="Review the details below. Edit anything that wasn't extracted correctly."
+    >
       <div className="space-y-4">
         <div className="rounded-md border border-info/25 bg-info/5 px-3.5 py-2.5 text-xs text-muted-foreground">
-          These details were extracted from your uploaded document. Please verify and correct anything before proceeding.
+          These details were extracted from your uploaded document. Please verify and correct
+          anything before proceeding.
         </div>
 
         <Field label="Tender Title" required error={errors.title}>
@@ -898,7 +919,9 @@ function StepReview({
             >
               <option value="">Select department</option>
               {DEPARTMENTS.map((d) => (
-                <option key={d} value={d}>{d}</option>
+                <option key={d} value={d}>
+                  {d}
+                </option>
               ))}
             </select>
           </Field>
@@ -910,13 +933,20 @@ function StepReview({
               onChange={(e) => set("type", e.target.value)}
             >
               {TENDER_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
+                <option key={t} value={t}>
+                  {t}
+                </option>
               ))}
             </select>
           </Field>
         </div>
 
-        <Field label="Estimated Value (₹)" required error={errors.value} hint="Enter the amount in rupees">
+        <Field
+          label="Estimated Value (₹)"
+          required
+          error={errors.value}
+          hint="Enter the amount in rupees"
+        >
           <input
             className={inputClass}
             value={form.value}
@@ -968,10 +998,13 @@ function StepReview({
                 <Eye className="size-4 text-muted-foreground" />
                 Review Extracted Text
                 <span className="text-xs font-normal text-muted-foreground">
-                  ({pdfResult.totalPages} page{pdfResult.totalPages === 1 ? "" : "s"}, {pdfResult.fullText.split(/\s+/).length.toLocaleString()} words)
+                  ({pdfResult.totalPages} page{pdfResult.totalPages === 1 ? "" : "s"},{" "}
+                  {pdfResult.fullText.split(/\s+/).length.toLocaleString()} words)
                 </span>
               </span>
-              <ArrowRight className={`size-4 text-muted-foreground transition-transform ${showExtractedText ? "rotate-90" : ""}`} />
+              <ArrowRight
+                className={`size-4 text-muted-foreground transition-transform ${showExtractedText ? "rotate-90" : ""}`}
+              />
             </button>
 
             {showExtractedText && (
@@ -979,8 +1012,8 @@ function StepReview({
                 {pdfResult.emptyPageNumbers.length > 0 && (
                   <p className="mb-3 rounded border border-warning/30 bg-warning/5 px-3 py-2 text-[11px] text-warning">
                     <TriangleAlert className="mr-1 inline size-3" />
-                    Pages {pdfResult.emptyPageNumbers.join(", ")} had no extractable text
-                    (scanned or image-only). OCR is not available in this prototype.
+                    Pages {pdfResult.emptyPageNumbers.join(", ")} had no extractable text (scanned
+                    or image-only). OCR is not available in this prototype.
                   </p>
                 )}
                 <div className="max-h-96 space-y-4 overflow-y-auto">
@@ -1056,15 +1089,21 @@ function StepChecks({
 
             <div className="grid gap-2 sm:grid-cols-2">
               {AUDIT_RULES.map((r) => (
-                <div key={r.id} className="flex items-start gap-2 rounded border border-border/60 bg-card p-2 text-xs">
+                <div
+                  key={r.id}
+                  className="flex items-start gap-2 rounded border border-border/60 bg-card p-2 text-xs"
+                >
                   <FileText className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
                       <span className="font-medium truncate">{r.name}</span>
-                      <span className="text-[10px] text-muted-foreground shrink-0">{r.category}</span>
+                      <span className="text-[10px] text-muted-foreground shrink-0">
+                        {r.category}
+                      </span>
                     </div>
                     <p className="mt-0.5 text-[10px] text-muted-foreground truncate">
-                      Source: {r.source.name} ({r.source.type === "reference" ? "Official" : "Demo"})
+                      Source: {r.source.name} ({r.source.type === "reference" ? "Official" : "Demo"}
+                      )
                     </p>
                   </div>
                 </div>
@@ -1076,10 +1115,13 @@ function StepChecks({
             <div className="flex items-start gap-2">
               <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
               <div>
-                <p className="font-semibold text-foreground">Source-Based, Explainable Rule Checking</p>
+                <p className="font-semibold text-foreground">
+                  Source-Based, Explainable Rule Checking
+                </p>
                 <p className="mt-0.5">
-                  Every check returns evidence snippets with exact page numbers. Results are strictly decision support,
-                  not legal advice. All findings require human review before verification.
+                  Every check returns evidence snippets with exact page numbers. Results are
+                  strictly decision support, not legal advice. All findings require human review
+                  before verification.
                 </p>
               </div>
             </div>
@@ -1089,7 +1131,9 @@ function StepChecks({
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <Loader2 className="size-4 animate-spin text-primary" />
-                <p className="text-sm font-medium">Checking compliance against rule sources… {checkProgress}%</p>
+                <p className="text-sm font-medium">
+                  Checking compliance against rule sources… {checkProgress}%
+                </p>
               </div>
               <ProgressBar value={checkProgress} />
             </div>
@@ -1103,7 +1147,8 @@ function StepChecks({
                   <p className="text-sm font-semibold text-success">Rule evaluation complete</p>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  {AUDIT_RULES.length} rules checked · {findingCounts.Found} Found · {findingCounts.Missing} Missing · {findingCounts["Needs Review"]} Needs Review
+                  {AUDIT_RULES.length} rules checked · {findingCounts.Found} Found ·{" "}
+                  {findingCounts.Missing} Missing · {findingCounts["Needs Review"]} Needs Review
                 </p>
               </div>
               <Btn onClick={onProceed} className="w-full sm:w-auto font-medium">
@@ -1144,7 +1189,11 @@ function StepFindings({
   findingCounts: Record<FindingStatus, number>;
   overallScore: number;
   scoreExplanation: string;
-  reviewStatusInfo: { label: string; tone: "success" | "danger" | "warning" | "neutral"; description: string };
+  reviewStatusInfo: {
+    label: string;
+    tone: "success" | "danger" | "warning" | "neutral";
+    description: string;
+  };
   verifiedCount: number;
   updateFinding: (index: number, status: FindingStatus) => void;
   updateOfficerNote: (index: number, note: string) => void;
@@ -1176,11 +1225,17 @@ function StepFindings({
     });
   }, [indexedFindings, priorityFilter, statusFilter]);
 
-  const priorityGroups: { priority: RulePriority; label: string; description: string; items: typeof indexedFindings }[] = [
+  const priorityGroups: {
+    priority: RulePriority;
+    label: string;
+    description: string;
+    items: typeof indexedFindings;
+  }[] = [
     {
       priority: "High",
       label: "High Priority Rules",
-      description: "Critical statutory, financial & eligibility requirements (GFR 2017 & CVC guidelines)",
+      description:
+        "Critical statutory, financial & eligibility requirements (GFR 2017 & CVC guidelines)",
       items: filteredFindings.filter(({ finding: f }) => f.priority === "High"),
     },
     {
@@ -1207,14 +1262,21 @@ function StepFindings({
             <div>
               <p className="font-semibold">Automated Review — Human Verification Required</p>
               <p className="mt-0.5 leading-relaxed text-[11px] text-muted-foreground">
-                Automated rule checking provides decision support and does not constitute legal advice or an official regulatory clearance.
-                Please review evidence citations with page numbers, record review remarks, and confirm verification status below.
+                Automated rule checking provides decision support and does not constitute legal
+                advice or an official regulatory clearance. Please review evidence citations with
+                page numbers, record review remarks, and confirm verification status below.
               </p>
             </div>
           </div>
           {verifiedCount < findings.length && !isAuditor && (
-            <Btn size="sm" variant="outline" onClick={verifyAllFindings} className="shrink-0 self-start sm:self-center">
-              <Check className="size-3.5" /> Verify All ({findings.length - verifiedCount} remaining)
+            <Btn
+              size="sm"
+              variant="outline"
+              onClick={verifyAllFindings}
+              className="shrink-0 self-start sm:self-center"
+            >
+              <Check className="size-3.5" /> Verify All ({findings.length - verifiedCount}{" "}
+              remaining)
             </Btn>
           )}
         </div>
@@ -1255,7 +1317,9 @@ function StepFindings({
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Rule Coverage Score
                 </span>
-                <Pill tone={reviewStatusInfo.tone} dot>{reviewStatusInfo.label}</Pill>
+                <Pill tone={reviewStatusInfo.tone} dot>
+                  {reviewStatusInfo.label}
+                </Pill>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
                 {scoreExplanation}
@@ -1282,7 +1346,9 @@ function StepFindings({
             </div>
             <div className="flex items-center gap-2 text-xs">
               <span className="text-muted-foreground">Showing:</span>
-              <strong className="text-foreground">{filteredFindings.length} of {findings.length} rules</strong>
+              <strong className="text-foreground">
+                {filteredFindings.length} of {findings.length} rules
+              </strong>
               {(priorityFilter !== "All" || statusFilter !== "All") && (
                 <button
                   type="button"
@@ -1301,7 +1367,9 @@ function StepFindings({
           <div className="grid gap-3 sm:grid-cols-2">
             {/* Priority Filter */}
             <div className="space-y-1">
-              <label className="text-[11px] font-medium text-muted-foreground">Priority Level</label>
+              <label className="text-[11px] font-medium text-muted-foreground">
+                Priority Level
+              </label>
               <div className="flex flex-wrap gap-1.5">
                 {(["All", "High", "Medium", "Low"] as const).map((p) => {
                   const count =
@@ -1325,7 +1393,9 @@ function StepFindings({
                       }`}
                     >
                       {p === "All" ? "All Priorities" : `${p} Priority`}
-                      <span className={`rounded-full px-1.5 py-0.2 text-[10px] ${active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      <span
+                        className={`rounded-full px-1.5 py-0.2 text-[10px] ${active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+                      >
                         {count}
                       </span>
                     </button>
@@ -1353,7 +1423,9 @@ function StepFindings({
                       }`}
                     >
                       {s}
-                      <span className={`rounded-full px-1.5 py-0.2 text-[10px] ${active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                      <span
+                        className={`rounded-full px-1.5 py-0.2 text-[10px] ${active ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+                      >
                         {count}
                       </span>
                     </button>
@@ -1470,7 +1542,10 @@ function StepFindings({
                                 {/* Source citation info */}
                                 <div className="mt-1 flex flex-wrap items-center gap-x-2 text-[11px] text-muted-foreground">
                                   <span>
-                                    Source: <strong className="font-medium text-foreground">{f.source.name}</strong>
+                                    Source:{" "}
+                                    <strong className="font-medium text-foreground">
+                                      {f.source.name}
+                                    </strong>
                                   </span>
                                   <span>·</span>
                                   <span>{f.source.authority}</span>
@@ -1499,16 +1574,22 @@ function StepFindings({
 
                             {/* Status & Verification controls */}
                             <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
-                              <Pill tone={meta.tone} dot>{f.status}</Pill>
+                              <Pill tone={meta.tone} dot>
+                                {f.status}
+                              </Pill>
                               {!isAuditor && (
                                 <select
                                   value={f.status}
-                                  onChange={(e) => updateFinding(origIndex, e.target.value as FindingStatus)}
+                                  onChange={(e) =>
+                                    updateFinding(origIndex, e.target.value as FindingStatus)
+                                  }
                                   className="h-7 rounded border border-input bg-card px-2 text-xs"
                                   title="Officer status override"
                                 >
                                   {FINDING_STATUSES.map((s) => (
-                                    <option key={s} value={s}>{s}</option>
+                                    <option key={s} value={s}>
+                                      {s}
+                                    </option>
                                   ))}
                                 </select>
                               )}
@@ -1520,9 +1601,15 @@ function StepFindings({
                                     ? "border-success/40 bg-success/10 text-success hover:bg-success/20"
                                     : "border-border bg-card text-muted-foreground hover:bg-accent/40"
                                 }`}
-                                title={f.humanVerified ? "Click to unmark verification" : "Click to mark as verified"}
+                                title={
+                                  f.humanVerified
+                                    ? "Click to unmark verification"
+                                    : "Click to mark as verified"
+                                }
                               >
-                                <Check className={`size-3.5 ${f.humanVerified ? "stroke-[3]" : ""}`} />
+                                <Check
+                                  className={`size-3.5 ${f.humanVerified ? "stroke-[3]" : ""}`}
+                                />
                                 {f.humanVerified ? "Verified" : "Verify"}
                               </button>
                             </div>
@@ -1537,12 +1624,17 @@ function StepFindings({
                           {f.evidence.length > 0 ? (
                             <div className="ml-10 space-y-1.5 rounded-md border border-border/70 bg-muted/30 p-2.5">
                               <p className="text-[11px] font-semibold text-muted-foreground">
-                                Document Evidence ({f.evidence.length} match{f.evidence.length > 1 ? "es" : ""}):
+                                Document Evidence ({f.evidence.length} match
+                                {f.evidence.length > 1 ? "es" : ""}):
                               </p>
                               {f.evidence.map((ev, evIdx) => (
                                 <div key={evIdx} className="text-xs leading-relaxed">
-                                  <span className="font-semibold text-primary">Page {ev.pageNumber}:</span>{" "}
-                                  <span className="italic text-foreground/85">&ldquo;{ev.text}&rdquo;</span>
+                                  <span className="font-semibold text-primary">
+                                    Page {ev.pageNumber}:
+                                  </span>{" "}
+                                  <span className="italic text-foreground/85">
+                                    &ldquo;{ev.text}&rdquo;
+                                  </span>
                                 </div>
                               ))}
                             </div>
@@ -1562,7 +1654,9 @@ function StepFindings({
                                 </span>
                                 <div className="flex items-center gap-1.5">
                                   <Pill tone="neutral">
-                                    {aiSuggestion.sourceMode === "live-ai" ? "Live AI" : "Non-AI Fallback"}
+                                    {aiSuggestion.sourceMode === "live-ai"
+                                      ? "Live AI"
+                                      : "Non-AI Fallback"}
                                   </Pill>
                                   <Pill
                                     tone={
@@ -1579,14 +1673,18 @@ function StepFindings({
                               </div>
 
                               <div className="space-y-0.5">
-                                <p className="font-semibold text-foreground text-[11px]">Clause Summary:</p>
+                                <p className="font-semibold text-foreground text-[11px]">
+                                  Clause Summary:
+                                </p>
                                 <p className="text-muted-foreground leading-relaxed">
                                   {aiSuggestion.clauseSummary}
                                 </p>
                               </div>
 
                               <div className="space-y-0.5">
-                                <p className="font-semibold text-foreground text-[11px]">Gap &amp; Risk Analysis:</p>
+                                <p className="font-semibold text-foreground text-[11px]">
+                                  Gap &amp; Risk Analysis:
+                                </p>
                                 <p className="text-muted-foreground leading-relaxed">
                                   {aiSuggestion.gapAnalysis}
                                 </p>
@@ -1620,7 +1718,8 @@ function StepFindings({
                           <div className="ml-10 rounded-md border border-border/70 bg-card/60 p-2.5 space-y-1.5">
                             <div className="flex items-center justify-between text-[11px]">
                               <span className="flex items-center gap-1 font-semibold text-muted-foreground">
-                                <MessageSquare className="size-3" /> Officer Review Remarks &amp; Audit Note:
+                                <MessageSquare className="size-3" /> Officer Review Remarks &amp;
+                                Audit Note:
                               </span>
                               <div className="flex items-center gap-2">
                                 {f.humanVerified ? (
@@ -1678,12 +1777,24 @@ function StepReport({
   userName,
   onSave,
 }: {
-  form: { title: string; department: string; type: string; value: string; issueDate?: string; closingDate?: string; description?: string };
+  form: {
+    title: string;
+    department: string;
+    type: string;
+    value: string;
+    issueDate?: string;
+    closingDate?: string;
+    description?: string;
+  };
   findings: AuditFinding[];
   findingCounts: Record<FindingStatus, number>;
   overallScore: number;
   scoreExplanation: string;
-  reviewStatusInfo: { label: string; tone: "success" | "danger" | "warning" | "neutral"; description: string };
+  reviewStatusInfo: {
+    label: string;
+    tone: "success" | "danger" | "warning" | "neutral";
+    description: string;
+  };
   verifiedCount: number;
   uploadedFile: File | null;
   aiReport?: AiReviewReport | null;
@@ -1737,9 +1848,12 @@ function StepReport({
           <div className="space-y-1">
             <p className="font-semibold text-sm">Automated review — human verification required</p>
             <p className="leading-relaxed text-muted-foreground">
-              This automated audit report is generated as <strong>decision support</strong> for procurement officers and auditors.
-              It is <strong>NOT an audit clearance certificate</strong>, does not claim or warrant that the tender is legally compliant,
-              and does not replace statutory audit processes. All findings, cited excerpts, and regulatory gaps must be reviewed and confirmed by an authorized officer.
+              This automated audit report is generated as <strong>decision support</strong> for
+              procurement officers and auditors. It is{" "}
+              <strong>NOT an audit clearance certificate</strong>, does not claim or warrant that
+              the tender is legally compliant, and does not replace statutory audit processes. All
+              findings, cited excerpts, and regulatory gaps must be reviewed and confirmed by an
+              authorized officer.
             </p>
           </div>
         </div>
@@ -1754,7 +1868,9 @@ function StepReport({
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Tender Details */}
             <div className="space-y-3 rounded-md border border-border p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Tender &amp; Document Details</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Tender &amp; Document Details
+              </p>
               <dl className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Title</dt>
@@ -1775,13 +1891,17 @@ function StepReport({
                 {uploadedFile && (
                   <div className="flex justify-between">
                     <dt className="text-muted-foreground">Source Document</dt>
-                    <dd className="font-medium truncate max-w-[60%] font-mono text-xs">{uploadedFile.name}</dd>
+                    <dd className="font-medium truncate max-w-[60%] font-mono text-xs">
+                      {uploadedFile.name}
+                    </dd>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Review Status</dt>
                   <dd className="font-medium">
-                    <Pill tone={reviewStatusInfo.tone} dot>{reviewStatusInfo.label}</Pill>
+                    <Pill tone={reviewStatusInfo.tone} dot>
+                      {reviewStatusInfo.label}
+                    </Pill>
                   </dd>
                 </div>
               </dl>
@@ -1790,8 +1910,12 @@ function StepReport({
             {/* Compliance Score */}
             <div className="space-y-3 rounded-md border border-border p-4">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Rule Coverage Score</p>
-                <Pill tone={reviewStatusInfo.tone} dot>{reviewStatusInfo.label}</Pill>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Rule Coverage Score
+                </p>
+                <Pill tone={reviewStatusInfo.tone} dot>
+                  {reviewStatusInfo.label}
+                </Pill>
               </div>
               <div className="text-center">
                 <p className="text-4xl font-bold">{overallScore}%</p>
@@ -1808,14 +1932,19 @@ function StepReport({
                   <span className="size-2 rounded-full bg-success" /> {findingCounts.Found} Found
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="size-2 rounded-full bg-destructive" /> {findingCounts.Missing} Missing
+                  <span className="size-2 rounded-full bg-destructive" /> {findingCounts.Missing}{" "}
+                  Missing
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="size-2 rounded-full bg-warning" /> {findingCounts["Needs Review"]} Review
+                  <span className="size-2 rounded-full bg-warning" />{" "}
+                  {findingCounts["Needs Review"]} Review
                 </span>
               </div>
               <div className="mt-2 text-center text-xs text-muted-foreground">
-                <span className="font-medium text-foreground">{verifiedCount} of {findings.length}</span> findings verified by human reviewer
+                <span className="font-medium text-foreground">
+                  {verifiedCount} of {findings.length}
+                </span>{" "}
+                findings verified by human reviewer
               </div>
             </div>
           </div>
@@ -1911,7 +2040,8 @@ function StepReport({
                   <Pill tone="info">{officialChecked.length} rules</Pill>
                 </div>
                 <p className="text-muted-foreground text-[11px]">
-                  General Financial Rules (GFR 2017) &amp; Central Vigilance Commission (CVC) guidelines.
+                  General Financial Rules (GFR 2017) &amp; Central Vigilance Commission (CVC)
+                  guidelines.
                 </p>
               </div>
               <div className="rounded border bg-card p-3 space-y-1.5">
@@ -1920,7 +2050,8 @@ function StepReport({
                   <Pill tone="neutral">{demoChecked.length} rules</Pill>
                 </div>
                 <p className="text-muted-foreground text-[11px]">
-                  Academic prototype rules for technical, financial, and environmental compliance testing.
+                  Academic prototype rules for technical, financial, and environmental compliance
+                  testing.
                 </p>
               </div>
               <div className="rounded border bg-card p-3 space-y-1.5">
@@ -1979,7 +2110,9 @@ function StepReport({
                       </td>
                       <td className="py-2 px-2.5">
                         <p className="font-medium text-foreground">{f.ruleName}</p>
-                        <p className="text-[10px] text-muted-foreground line-clamp-1">{f.explanation}</p>
+                        <p className="text-[10px] text-muted-foreground line-clamp-1">
+                          {f.explanation}
+                        </p>
                         {f.officerNotes && (
                           <p className="mt-0.5 text-[10px] text-primary italic line-clamp-1">
                             Note: {f.officerNotes}
@@ -1987,14 +2120,18 @@ function StepReport({
                         )}
                       </td>
                       <td className="py-2 px-2.5">
-                        <Pill tone={FINDING_META[f.status].tone} dot>{f.status}</Pill>
+                        <Pill tone={FINDING_META[f.status].tone} dot>
+                          {f.status}
+                        </Pill>
                       </td>
                       <td className="py-2 px-2.5 text-[11px] text-muted-foreground">
                         {f.source.name}
                       </td>
                       <td className="py-2 px-2.5 text-[11px]">
                         {f.evidence[0] ? (
-                          <span className="text-primary font-medium">Page {f.evidence[0].pageNumber}</span>
+                          <span className="text-primary font-medium">
+                            Page {f.evidence[0].pageNumber}
+                          </span>
                         ) : (
                           <span className="text-muted-foreground italic">—</span>
                         )}
@@ -2018,7 +2155,8 @@ function StepReport({
           {/* Auditor notice */}
           {isAuditor && (
             <div className="rounded-md border border-info/30 bg-info/5 px-4 py-3 text-sm text-muted-foreground">
-              <strong>Read-only:</strong> Auditors can review findings and evidence but cannot create tenders. Contact a Procurement Officer to save this audit.
+              <strong>Read-only:</strong> Auditors can review findings and evidence but cannot
+              create tenders. Contact a Procurement Officer to save this audit.
             </div>
           )}
 
@@ -2027,10 +2165,7 @@ function StepReport({
             <Btn onClick={onSave} disabled={isAuditor}>
               <FileSearch className="size-4" /> Save &amp; Create Tender
             </Btn>
-            <Btn
-              variant="outline"
-              onClick={handleDownloadPdf}
-            >
+            <Btn variant="outline" onClick={handleDownloadPdf}>
               <Download className="size-4" /> Download Report (PDF)
             </Btn>
           </div>

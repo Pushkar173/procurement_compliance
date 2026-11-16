@@ -79,7 +79,8 @@ export function ContractStatusBadge({ status }: { status: ContractStatus }) {
 }
 
 export function DocStatusBadge({ status }: { status: string }) {
-  const tone: Tone = status === "Active" ? "success" : status === "Superseded" ? "caution" : "neutral";
+  const tone: Tone =
+    status === "Active" ? "success" : status === "Superseded" ? "caution" : "neutral";
   return <Pill tone={tone}>{status}</Pill>;
 }
 

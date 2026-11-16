@@ -64,7 +64,11 @@ function CompliancePage() {
     return compliance.filter((c) => {
       const scopeId = c.tenderId ?? c.contractId ?? "";
       return (
-        (!term || [c.id, c.requirement, c.remarks, c.responsible, c.sourceDocId].join(" ").toLowerCase().includes(term)) &&
+        (!term ||
+          [c.id, c.requirement, c.remarks, c.responsible, c.sourceDocId]
+            .join(" ")
+            .toLowerCase()
+            .includes(term)) &&
         (!status || c.status === status) &&
         (!source || c.sourceDocId === source) &&
         (!scope || scopeId === scope)
@@ -89,8 +93,18 @@ function CompliancePage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Compliant" value={counts.Compliant} icon={CheckCircle2} tone="success" />
         <StatCard label="Pending" value={counts.Pending} icon={ClipboardCheck} tone="warning" />
-        <StatCard label="Partially Compliant" value={counts["Partially Compliant"]} icon={ClipboardCheck} tone="caution" />
-        <StatCard label="Non-Compliant" value={counts["Non-Compliant"]} icon={TriangleAlert} tone="info" />
+        <StatCard
+          label="Partially Compliant"
+          value={counts["Partially Compliant"]}
+          icon={ClipboardCheck}
+          tone="caution"
+        />
+        <StatCard
+          label="Non-Compliant"
+          value={counts["Non-Compliant"]}
+          icon={TriangleAlert}
+          tone="info"
+        />
       </div>
 
       <Panel title="Overall Compliance">
@@ -99,8 +113,18 @@ function CompliancePage() {
 
       <Panel bodyClassName="space-y-4 p-5">
         <div className="grid gap-3 lg:grid-cols-[2fr_1fr_1fr_1fr]">
-          <SearchInput value={query} onChange={setQuery} placeholder="Search requirement, remark, officer…" />
-          <Select label="Status" value={status} options={COMPLIANCE_STATUSES} onChange={setStatus} allLabel="All statuses" />
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Search requirement, remark, officer…"
+          />
+          <Select
+            label="Status"
+            value={status}
+            options={COMPLIANCE_STATUSES}
+            onChange={setStatus}
+            allLabel="All statuses"
+          />
           <Select
             label="Source Regulation"
             value={source}
@@ -108,11 +132,18 @@ function CompliancePage() {
             onChange={setSource}
             allLabel="All documents"
           />
-          <Select label="Tender / Contract" value={scope} options={scopeOptions} onChange={setScope} allLabel="All records" />
+          <Select
+            label="Tender / Contract"
+            value={scope}
+            options={scopeOptions}
+            onChange={setScope}
+            allLabel="All records"
+          />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
           <p className="text-xs text-muted-foreground">
-            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of {compliance.length} requirements
+            Showing <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
+            {compliance.length} requirements
           </p>
           <Btn
             variant="ghost"
@@ -130,7 +161,10 @@ function CompliancePage() {
         </div>
       </Panel>
 
-      <Panel title="Compliance Checklist" description="Update status, evidence, remarks and responsibility; every change is written to the audit trail">
+      <Panel
+        title="Compliance Checklist"
+        description="Update status, evidence, remarks and responsibility; every change is written to the audit trail"
+      >
         <ComplianceTable
           items={filtered}
           showScopeColumn

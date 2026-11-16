@@ -1,5 +1,14 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Building2, FileCheck2, FileText, Mail, MapPin, Phone, RefreshCw } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  FileCheck2,
+  FileText,
+  Mail,
+  MapPin,
+  Phone,
+  RefreshCw,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { ContractStatusBadge, Pill } from "@/components/common/badges";
@@ -14,6 +23,7 @@ import {
   WorkflowStrip,
 } from "@/components/common/primitives";
 import { ComplianceProgress, ComplianceTable } from "@/components/compliance/compliance-table";
+import type { Contract, ComplianceItem, AuditEvent } from "@/data/demoData";
 import { formatINR, useStore } from "@/store/app-store";
 
 export const Route = createFileRoute("/_shell/contracts/$contractId")({
@@ -25,11 +35,18 @@ export const Route = createFileRoute("/_shell/contracts/$contractId")({
         content: `Contract ${params.contractId}: vendor details, milestones, documents, compliance checklist and activity history.`,
       },
       { property: "og:title", content: `Contract ${params.contractId} — ProcureComply` },
-      { property: "og:description", content: "Contract record with milestones and compliance status." },
+      {
+        property: "og:description",
+        content: "Contract record with milestones and compliance status.",
+      },
     ],
   }),
-  loader: async ({ params }) => {
-    return { dbContract: null, dbCompliance: [], dbAudit: [] };
+  loader: async () => {
+    return {
+      dbContract: null as Contract | null,
+      dbCompliance: [] as ComplianceItem[],
+      dbAudit: [] as AuditEvent[],
+    };
   },
   component: ContractDetail,
   notFoundComponent: () => (
@@ -49,11 +66,11 @@ export const Route = createFileRoute("/_shell/contracts/$contractId")({
 });
 
 function ContractDetail() {
-  const { dbContract } = Route.useLoaderData() as any;
+  const { dbContract } = Route.useLoaderData();
   const { contractId } = Route.useParams();
   const { contracts: storeContracts, compliance, audit, updateContract, user } = useStore();
   const role = user?.role;
-  
+
   const storeContract = storeContracts.find((c) => c.id === contractId);
   const contract = dbContract || storeContract;
   if (!contract) throw notFound();
@@ -63,11 +80,16 @@ function ContractDetail() {
     (a) => a.object.includes(contract.id) || items.some((i) => a.object.includes(i.id)),
   );
 
-  const canEdit = role === "admin" || (role === "officer" && contract.manager === ((user as any)?.user_metadata?.name || "Pushkar Bhati"));
+  const canEdit =
+    role === "admin" ||
+    (role === "officer" && contract.manager === (user?.name || "Pushkar Bhati"));
 
   return (
     <div className="space-y-6">
-      <Link to="/contracts" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/contracts"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" /> Back to Contract Management
       </Link>
 
@@ -161,7 +183,10 @@ function ContractDetail() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Milestones & Timeline" description="Contract creation through renewal or completion">
+        <Panel
+          title="Milestones & Timeline"
+          description="Contract creation through renewal or completion"
+        >
           <Timeline items={contract.milestones} />
         </Panel>
 
@@ -180,7 +205,11 @@ function ContractDetail() {
                         {d.date} · {d.by}
                       </p>
                     </div>
-                    <Btn size="sm" variant="ghost" onClick={() => toast.info("Download is a demo action")}>
+                    <Btn
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => toast.info("Download is a demo action")}
+                    >
                       Download
                     </Btn>
                   </li>
@@ -203,7 +232,8 @@ function ContractDetail() {
                       {a.previous && a.next && (
                         <>
                           {" "}
-                          · <span className="font-medium">{a.previous}</span> → <span className="font-medium">{a.next}</span>
+                          · <span className="font-medium">{a.previous}</span> →{" "}
+                          <span className="font-medium">{a.next}</span>
                         </>
                       )}
                     </p>
@@ -215,7 +245,10 @@ function ContractDetail() {
         </div>
       </div>
 
-      <Panel title="Contract Compliance Checklist" description="Requirements applicable during contract execution">
+      <Panel
+        title="Contract Compliance Checklist"
+        description="Requirements applicable during contract execution"
+      >
         <ComplianceTable
           items={items}
           scopeLabel={`Checklist for ${contract.id}`}

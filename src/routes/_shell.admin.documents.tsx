@@ -162,14 +162,22 @@ function AdminDocumentsPage() {
       relatedContracts: [],
       relatedDocs: [],
       uploadedBy: user?.name ?? "Administrator",
-      uploadDate: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+      uploadDate: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
       fileSize: "1.2 MB",
       pages: 14,
       tags: [newDocData.category, newDocData.type],
       history: [
         {
           version: newDocData.version.trim() || "v1.0",
-          date: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+          date: new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
           note: "Initial version registered by administrator",
           by: user?.name ?? "Administrator",
         },
@@ -281,7 +289,10 @@ function AdminDocumentsPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `procurecomply-documents-${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      "download",
+      `procurecomply-documents-${new Date().toISOString().slice(0, 10)}.csv`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -315,11 +326,41 @@ function AdminDocumentsPage() {
 
       {/* Metric Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <StatCard label="Total Master Docs" value={totalCount} icon={FileStack} hint="Registered policies" tone="primary" />
-        <StatCard label="Ministry of Finance" value={financeCount} icon={BookOpen} hint="GFR & Manuals" tone="info" />
-        <StatCard label="CVC Guidelines" value={cvcCount} icon={FileCheck} hint="Vigilance mandates" tone="warning" />
-        <StatCard label="Ministry of Power" value={powerCount} icon={Layers} hint="Sector regulations" tone="caution" />
-        <StatCard label="Active in Force" value={`${activeCount}/${totalCount}`} icon={CheckCircle} hint="Applicable policies" tone="success" />
+        <StatCard
+          label="Total Master Docs"
+          value={totalCount}
+          icon={FileStack}
+          hint="Registered policies"
+          tone="primary"
+        />
+        <StatCard
+          label="Ministry of Finance"
+          value={financeCount}
+          icon={BookOpen}
+          hint="GFR & Manuals"
+          tone="info"
+        />
+        <StatCard
+          label="CVC Guidelines"
+          value={cvcCount}
+          icon={FileCheck}
+          hint="Vigilance mandates"
+          tone="warning"
+        />
+        <StatCard
+          label="Ministry of Power"
+          value={powerCount}
+          icon={Layers}
+          hint="Sector regulations"
+          tone="caution"
+        />
+        <StatCard
+          label="Active in Force"
+          value={`${activeCount}/${totalCount}`}
+          icon={CheckCircle}
+          hint="Applicable policies"
+          tone="success"
+        />
       </div>
 
       {/* Filter and Search Bar */}
@@ -384,24 +425,32 @@ function AdminDocumentsPage() {
                   <Td>
                     <div className="max-w-md">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-semibold text-primary">{doc.id}</span>
+                        <span className="font-mono text-xs font-semibold text-primary">
+                          {doc.id}
+                        </span>
                         <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                           {doc.category}
                         </span>
                       </div>
-                      <p className="mt-0.5 text-sm font-medium text-foreground line-clamp-1">{doc.title}</p>
+                      <p className="mt-0.5 text-sm font-medium text-foreground line-clamp-1">
+                        {doc.title}
+                      </p>
                       <p className="text-xs text-muted-foreground line-clamp-1">{doc.summary}</p>
                     </div>
                   </Td>
                   <Td>
                     <div className="min-w-0">
-                      <p className="text-xs font-medium text-foreground truncate">{doc.authority}</p>
+                      <p className="text-xs font-medium text-foreground truncate">
+                        {doc.authority}
+                      </p>
                       <p className="text-xs text-muted-foreground">{doc.type}</p>
                     </div>
                   </Td>
                   <Td>
                     <div className="min-w-0">
-                      <p className="text-xs font-mono font-medium text-foreground truncate">{doc.refNumber}</p>
+                      <p className="text-xs font-mono font-medium text-foreground truncate">
+                        {doc.refNumber}
+                      </p>
                       <p className="text-xs text-muted-foreground">Year {doc.year}</p>
                     </div>
                   </Td>
@@ -411,7 +460,10 @@ function AdminDocumentsPage() {
                         {doc.version}
                       </span>
                       {doc.history && doc.history.length > 1 && (
-                        <span className="text-[10px] text-muted-foreground" title={`${doc.history.length} revisions logged`}>
+                        <span
+                          className="text-[10px] text-muted-foreground"
+                          title={`${doc.history.length} revisions logged`}
+                        >
                           ({doc.history.length} rev)
                         </span>
                       )}
@@ -423,8 +475,8 @@ function AdminDocumentsPage() {
                         doc.status === "Active"
                           ? "bg-success/15 text-success"
                           : doc.status === "In Review"
-                          ? "bg-warning/20 text-warning-foreground"
-                          : "bg-muted text-muted-foreground"
+                            ? "bg-warning/20 text-warning-foreground"
+                            : "bg-muted text-muted-foreground"
                       }`}
                     >
                       <span
@@ -432,8 +484,8 @@ function AdminDocumentsPage() {
                           doc.status === "Active"
                             ? "bg-success"
                             : doc.status === "In Review"
-                            ? "bg-warning"
-                            : "bg-muted-foreground"
+                              ? "bg-warning"
+                              : "bg-muted-foreground"
                         }`}
                       />
                       {doc.status}
@@ -462,7 +514,11 @@ function AdminDocumentsPage() {
                         variant={doc.status === "Archived" ? "subtle" : "ghost"}
                         size="sm"
                         onClick={() => toggleArchive(doc)}
-                        className={doc.status !== "Archived" ? "text-muted-foreground hover:text-destructive" : ""}
+                        className={
+                          doc.status !== "Archived"
+                            ? "text-muted-foreground hover:text-destructive"
+                            : ""
+                        }
                         title={doc.status === "Archived" ? "Activate document" : "Archive document"}
                       >
                         <Archive className="size-3.5" />
@@ -620,7 +676,9 @@ function AdminDocumentsPage() {
                 type="date"
                 className={inputClass}
                 value={versionData.effectiveDate}
-                onChange={(e) => setVersionData((prev) => ({ ...prev, effectiveDate: e.target.value }))}
+                onChange={(e) =>
+                  setVersionData((prev) => ({ ...prev, effectiveDate: e.target.value }))
+                }
               />
             </Field>
           </div>

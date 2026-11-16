@@ -46,7 +46,10 @@ async function run() {
         `Asset ${s} has valid PDF MIME type (${cType})`,
       );
       const buf = await res.arrayBuffer();
-      assert(buf.byteLength > 1000, `Asset ${s} has non-trivial file size (${buf.byteLength} bytes)`);
+      assert(
+        buf.byteLength > 1000,
+        `Asset ${s} has non-trivial file size (${buf.byteLength} bytes)`,
+      );
     } catch (err) {
       assert(false, `Failed to fetch ${url}: ${err}`);
     }
@@ -70,8 +73,14 @@ async function run() {
       const res = await fetch(url);
       assert(res.status === 200, `Route ${r.path} (${r.title}) returns HTTP 200`);
       const html = await res.text();
-      assert(html.includes("<!DOCTYPE html>") || html.includes("<html"), `Route ${r.path} returns valid HTML document`);
-      assert(html.includes("ProcureComply") || html.includes("vite"), `Route ${r.path} contains application shell`);
+      assert(
+        html.includes("<!DOCTYPE html>") || html.includes("<html"),
+        `Route ${r.path} returns valid HTML document`,
+      );
+      assert(
+        html.includes("ProcureComply") || html.includes("vite"),
+        `Route ${r.path} contains application shell`,
+      );
     } catch (err) {
       assert(false, `Failed to fetch ${url}: ${err}`);
     }

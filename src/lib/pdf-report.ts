@@ -141,7 +141,6 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
   doc.text("1. Tender & Document Information", margin, y);
   y += 4;
 
-
   doc.setFillColor(248, 250, 252);
   doc.setDrawColor(226, 232, 240);
   doc.rect(margin, y, contentWidth, 38, "FD");
@@ -189,11 +188,7 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
   doc.setFont("helvetica", "bold");
   doc.text("Tender Timeline:", col3, y + 22);
   doc.setFont("helvetica", "normal");
-  doc.text(
-    `${data.tender.issueDate || "—"} to ${data.tender.closingDate || "—"}`,
-    col4,
-    y + 22,
-  );
+  doc.text(`${data.tender.issueDate || "—"} to ${data.tender.closingDate || "—"}`, col4, y + 22);
 
   // Row 4: Review Status & Verification Count
   doc.setFont("helvetica", "bold");
@@ -204,11 +199,7 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
   doc.setFont("helvetica", "bold");
   doc.text("Human Verification:", col3, y + 30);
   doc.setFont("helvetica", "normal");
-  doc.text(
-    `${data.verifiedCount} of ${data.findings.length} findings verified`,
-    col4,
-    y + 30,
-  );
+  doc.text(`${data.verifiedCount} of ${data.findings.length} findings verified`, col4, y + 30);
 
   y += 44;
 
@@ -316,7 +307,10 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
   y += 6;
 
   const priorityGroups: { priority: "High" | "Medium" | "Low"; title: string }[] = [
-    { priority: "High", title: "High Priority Rules (Critical Statutory & Financial Requirements)" },
+    {
+      priority: "High",
+      title: "High Priority Rules (Critical Statutory & Financial Requirements)",
+    },
     { priority: "Medium", title: "Medium Priority Rules (Contractual & Governance Standards)" },
     { priority: "Low", title: "Low Priority Rules (Operational & Advisory Provisions)" },
   ];
@@ -364,11 +358,7 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
       doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
       doc.setTextColor(statusColor[0]!, statusColor[1]!, statusColor[2]!);
-      doc.text(
-        `[${f.status.toUpperCase()}]`,
-        margin + 6 + doc.getTextWidth(f.ruleName) + 3,
-        y + 5,
-      );
+      doc.text(`[${f.status.toUpperCase()}]`, margin + 6 + doc.getTextWidth(f.ruleName) + 3, y + 5);
 
       // Source reference
       doc.setFont("helvetica", "normal");
@@ -406,7 +396,11 @@ export function generateAuditReportDoc(data: AuditReportData): jsPDF {
       if (f.officerNotes && f.officerNotes.trim()) {
         doc.setFont("helvetica", "normal");
         doc.setTextColor(15, 23, 42);
-        doc.text(` | Review Note: ${f.officerNotes.trim()}`, margin + 6 + doc.getTextWidth(verText), innerY);
+        doc.text(
+          ` | Review Note: ${f.officerNotes.trim()}`,
+          margin + 6 + doc.getTextWidth(verText),
+          innerY,
+        );
       }
 
       y += totalItemHeight + 3;

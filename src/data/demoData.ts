@@ -13,19 +13,10 @@
 export type Role = "officer" | "admin" | "auditor";
 
 export type ComplianceStatus =
-  | "Compliant"
-  | "Pending"
-  | "Partially Compliant"
-  | "Non-Compliant"
-  | "Not Applicable";
+  "Compliant" | "Pending" | "Partially Compliant" | "Non-Compliant" | "Not Applicable";
 
 export type DocumentType =
-  | "Regulation"
-  | "Policy"
-  | "Guideline"
-  | "Circular"
-  | "Manual"
-  | "Office Memorandum";
+  "Regulation" | "Policy" | "Guideline" | "Circular" | "Manual" | "Office Memorandum";
 
 export type Authority =
   | "Government of India"
@@ -35,12 +26,7 @@ export type Authority =
   | "Other Authorities";
 
 export type TenderStatus =
-  | "Draft"
-  | "Under Review"
-  | "Published"
-  | "Evaluation"
-  | "Awarded"
-  | "Closed";
+  "Draft" | "Under Review" | "Published" | "Evaluation" | "Awarded" | "Closed";
 
 export type ContractStatus = "Active" | "Expiring Soon" | "Completed" | "Terminated";
 
@@ -382,7 +368,12 @@ export const documents: RegDocument[] = [
     description:
       "Demo manual for contract administration: milestone definition, performance security, variation orders, payment certification, renewal planning and contract closure records.",
     applicability: "All contracts executed after the effective date.",
-    stages: ["Contract Creation", "Contract Execution", "Compliance Monitoring", "Contract Completion"],
+    stages: [
+      "Contract Creation",
+      "Contract Execution",
+      "Compliance Monitoring",
+      "Contract Completion",
+    ],
     requirements: [
       "Define measurable milestones in the contract schedule",
       "Obtain and track performance security validity",
@@ -947,9 +938,17 @@ export const contracts: Contract[] = [
       { name: "Contract Created", date: "20 Oct 2025", status: "Completed" },
       { name: "Agreement Signed", date: "28 Oct 2025", status: "Completed" },
       { name: "Work Started", date: "01 Nov 2025", status: "Completed" },
-      { name: "Milestone 1 — Quarterly Preventive Maintenance", date: "31 Jan 2026", status: "Completed" },
+      {
+        name: "Milestone 1 — Quarterly Preventive Maintenance",
+        date: "31 Jan 2026",
+        status: "Completed",
+      },
       { name: "Milestone 2 — Half-Yearly System Audit", date: "30 Apr 2026", status: "Completed" },
-      { name: "Milestone 3 — Annual Performance Review", date: "30 Sep 2026", status: "In Progress" },
+      {
+        name: "Milestone 3 — Annual Performance Review",
+        date: "30 Sep 2026",
+        status: "In Progress",
+      },
       { name: "Renewal / Completion", date: "26 Oct 2026", status: "Pending" },
     ],
     documents: [
@@ -1198,20 +1197,38 @@ export const complianceItems: ComplianceItem[] = [
   ci("CR-003", "Constitute a documented evaluation committee", "DOC-001", "Compliant", {
     tenderId: "TDR-2026-014",
   }),
-  ci("CR-004", "Include an integrity undertaking clause in the bid document", "DOC-002", "Compliant", {
-    tenderId: "TDR-2026-014",
-    category: "Vigilance",
-  }),
-  ci("CR-005", "Obtain conflict-of-interest declarations from committee members", "DOC-002", "Pending", {
-    tenderId: "TDR-2026-014",
-    category: "Vigilance",
-    remarks: "Two declarations awaited from technical members.",
-    dueDate: "02 Oct 2026",
-  }),
-  ci("CR-006", "Maintain a retrievable record of complaints and their disposal", "DOC-002", "Compliant", {
-    tenderId: "TDR-2026-014",
-    category: "Vigilance",
-  }),
+  ci(
+    "CR-004",
+    "Include an integrity undertaking clause in the bid document",
+    "DOC-002",
+    "Compliant",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Vigilance",
+    },
+  ),
+  ci(
+    "CR-005",
+    "Obtain conflict-of-interest declarations from committee members",
+    "DOC-002",
+    "Pending",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Vigilance",
+      remarks: "Two declarations awaited from technical members.",
+      dueDate: "02 Oct 2026",
+    },
+  ),
+  ci(
+    "CR-006",
+    "Maintain a retrievable record of complaints and their disposal",
+    "DOC-002",
+    "Compliant",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Vigilance",
+    },
+  ),
   ci("CR-007", "Publish the tender on the electronic portal", "DOC-007", "Compliant", {
     tenderId: "TDR-2026-014",
   }),
@@ -1219,23 +1236,41 @@ export const complianceItems: ComplianceItem[] = [
     tenderId: "TDR-2026-014",
     evidence: "Bid_Opening_Record.pdf",
   }),
-  ci("CR-009", "Preserve portal audit logs for the prescribed period", "DOC-007", "Partially Compliant", {
-    tenderId: "TDR-2026-014",
-    remarks: "Logs available from Mar 2026 onward; earlier export in progress.",
-    category: "Records",
-  }),
+  ci(
+    "CR-009",
+    "Preserve portal audit logs for the prescribed period",
+    "DOC-007",
+    "Partially Compliant",
+    {
+      tenderId: "TDR-2026-014",
+      remarks: "Logs available from Mar 2026 onward; earlier export in progress.",
+      category: "Records",
+    },
+  ),
   ci("CR-010", "Index the tender file with a unique reference", "DOC-010", "Compliant", {
     tenderId: "TDR-2026-014",
     category: "Records",
   }),
-  ci("CR-011", "Link compliance evidence to the corresponding requirement", "DOC-010", "Compliant", {
-    tenderId: "TDR-2026-014",
-    category: "Records",
-  }),
-  ci("CR-012", "Obtain administrative approval from the competent authority", "DOC-011", "Compliant", {
-    tenderId: "TDR-2026-014",
-    category: "Finance",
-  }),
+  ci(
+    "CR-011",
+    "Link compliance evidence to the corresponding requirement",
+    "DOC-010",
+    "Compliant",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Records",
+    },
+  ),
+  ci(
+    "CR-012",
+    "Obtain administrative approval from the competent authority",
+    "DOC-011",
+    "Compliant",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Finance",
+    },
+  ),
   ci("CR-013", "Record expenditure sanction reference in the tender file", "DOC-011", "Pending", {
     tenderId: "TDR-2026-014",
     category: "Finance",
@@ -1252,11 +1287,17 @@ export const complianceItems: ComplianceItem[] = [
     category: "Contract",
     remarks: "Applicable only after award of contract.",
   }),
-  ci("CR-016", "Record milestone verification before payment release", "DOC-003", "Not Applicable", {
-    tenderId: "TDR-2026-014",
-    category: "Contract",
-    remarks: "Applicable during contract execution stage.",
-  }),
+  ci(
+    "CR-016",
+    "Record milestone verification before payment release",
+    "DOC-003",
+    "Not Applicable",
+    {
+      tenderId: "TDR-2026-014",
+      category: "Contract",
+      remarks: "Applicable during contract execution stage.",
+    },
+  ),
   ci("CR-017", "State bid validity period explicitly in the notice", "DOC-004", "Compliant", {
     tenderId: "TDR-2026-016",
     responsible: "M. Fernandes",
@@ -1274,12 +1315,18 @@ export const complianceItems: ComplianceItem[] = [
     category: "Quality",
     evidence: "Lot1_Inspection_Report.pdf",
   }),
-  ci("CR-020", "Obtain third-party inspection certificate where prescribed", "DOC-008", "Partially Compliant", {
-    contractId: "CON-2026-011",
-    responsible: "M. Fernandes",
-    category: "Quality",
-    remarks: "Certificate received for lot 1; lot 2 pending.",
-  }),
+  ci(
+    "CR-020",
+    "Obtain third-party inspection certificate where prescribed",
+    "DOC-008",
+    "Partially Compliant",
+    {
+      contractId: "CON-2026-011",
+      responsible: "M. Fernandes",
+      category: "Quality",
+      remarks: "Certificate received for lot 1; lot 2 pending.",
+    },
+  ),
   ci("CR-021", "Initiate renewal proposal before the prescribed lead time", "DOC-006", "Pending", {
     contractId: "CON-2026-008",
     category: "Contract",

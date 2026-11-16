@@ -69,7 +69,11 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
     () =>
       form.regulationIds.flatMap((id) => {
         const doc = documents.find((d) => d.id === id);
-        return (doc?.requirements ?? []).map((r) => ({ requirement: r, sourceDocId: id, category: doc!.category }));
+        return (doc?.requirements ?? []).map((r) => ({
+          requirement: r,
+          sourceDocId: id,
+          category: doc!.category,
+        }));
       }),
     [form.regulationIds, documents],
   );
@@ -78,8 +82,7 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
     const e: Record<string, string> = {};
     if (current === 0) {
       if (!form.id.trim()) e.id = "Tender ID is required.";
-      else if (!/^TDR-\d{4}-\d{2,4}$/.test(form.id.trim()))
-        e.id = "Use the format TDR-YYYY-NNN.";
+      else if (!/^TDR-\d{4}-\d{2,4}$/.test(form.id.trim())) e.id = "Use the format TDR-YYYY-NNN.";
       if (!form.title.trim()) e.title = "Tender title is required.";
       if (!form.department) e.department = "Select a department.";
       if (!form.value.trim()) e.value = "Estimated value is required.";
@@ -201,13 +204,26 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
         {step === 0 && (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Tender ID" required error={errors.id} hint="Format: TDR-YYYY-NNN">
-              <input className={inputClass} value={form.id} onChange={(e) => set("id", e.target.value)} />
+              <input
+                className={inputClass}
+                value={form.id}
+                onChange={(e) => set("id", e.target.value)}
+              />
             </Field>
             <Field label="Tender Title" required error={errors.title}>
-              <input className={inputClass} value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="e.g. Network Equipment Procurement" />
+              <input
+                className={inputClass}
+                value={form.title}
+                onChange={(e) => set("title", e.target.value)}
+                placeholder="e.g. Network Equipment Procurement"
+              />
             </Field>
             <Field label="Department" required error={errors.department}>
-              <select className={inputClass} value={form.department} onChange={(e) => set("department", e.target.value)}>
+              <select
+                className={inputClass}
+                value={form.department}
+                onChange={(e) => set("department", e.target.value)}
+              >
                 <option value="">Select department…</option>
                 {DEPARTMENTS.map((d) => (
                   <option key={d} value={d}>
@@ -217,7 +233,11 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
               </select>
             </Field>
             <Field label="Tender Type" required>
-              <select className={inputClass} value={form.type} onChange={(e) => set("type", e.target.value)}>
+              <select
+                className={inputClass}
+                value={form.type}
+                onChange={(e) => set("type", e.target.value)}
+              >
                 {TENDER_TYPES.map((t) => (
                   <option key={t} value={t}>
                     {t}
@@ -225,12 +245,32 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
                 ))}
               </select>
             </Field>
-            <Field label="Estimated Value (₹)" required error={errors.value} hint={form.value && !Number.isNaN(Number(form.value)) ? formatINR(Number(form.value)) : "Enter the amount in rupees"}>
-              <input className={inputClass} value={form.value} onChange={(e) => set("value", e.target.value)} placeholder="25000000" inputMode="numeric" />
+            <Field
+              label="Estimated Value (₹)"
+              required
+              error={errors.value}
+              hint={
+                form.value && !Number.isNaN(Number(form.value))
+                  ? formatINR(Number(form.value))
+                  : "Enter the amount in rupees"
+              }
+            >
+              <input
+                className={inputClass}
+                value={form.value}
+                onChange={(e) => set("value", e.target.value)}
+                placeholder="25000000"
+                inputMode="numeric"
+              />
             </Field>
             <div className="sm:col-span-2">
               <Field label="Description" required error={errors.description}>
-                <textarea className={textareaClass} value={form.description} onChange={(e) => set("description", e.target.value)} placeholder="Scope of supply or work, delivery expectations, support period…" />
+                <textarea
+                  className={textareaClass}
+                  value={form.description}
+                  onChange={(e) => set("description", e.target.value)}
+                  placeholder="Scope of supply or work, delivery expectations, support period…"
+                />
               </Field>
             </div>
           </div>
@@ -239,13 +279,28 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
         {step === 1 && (
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Publication Date" required error={errors.issueDate}>
-              <input type="date" className={inputClass} value={form.issueDate} onChange={(e) => set("issueDate", e.target.value)} />
+              <input
+                type="date"
+                className={inputClass}
+                value={form.issueDate}
+                onChange={(e) => set("issueDate", e.target.value)}
+              />
             </Field>
             <Field label="Submission Deadline" required error={errors.closingDate}>
-              <input type="date" className={inputClass} value={form.closingDate} onChange={(e) => set("closingDate", e.target.value)} />
+              <input
+                type="date"
+                className={inputClass}
+                value={form.closingDate}
+                onChange={(e) => set("closingDate", e.target.value)}
+              />
             </Field>
             <Field label="Evaluation Date" required error={errors.evaluationDate}>
-              <input type="date" className={inputClass} value={form.evaluationDate} onChange={(e) => set("evaluationDate", e.target.value)} />
+              <input
+                type="date"
+                className={inputClass}
+                value={form.evaluationDate}
+                onChange={(e) => set("evaluationDate", e.target.value)}
+              />
             </Field>
           </div>
         )}
@@ -297,7 +352,8 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
               These requirements were generated from the selected regulations. They will be added to
-              the tender's checklist with status <span className="font-medium text-foreground">Pending</span>.
+              the tender's checklist with status{" "}
+              <span className="font-medium text-foreground">Pending</span>.
             </p>
             {generatedRequirements.length === 0 ? (
               <p className="rounded-md border border-border bg-muted/40 px-3.5 py-3 text-sm text-muted-foreground">
@@ -312,7 +368,9 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm">{r.requirement}</span>
-                      <span className="block text-xs text-muted-foreground">Source: {r.sourceDocId}</span>
+                      <span className="block text-xs text-muted-foreground">
+                        Source: {r.sourceDocId}
+                      </span>
                     </span>
                     <Pill tone="warning">Pending</Pill>
                   </li>
@@ -344,7 +402,9 @@ export function CreateTenderWizard({ open, onClose }: { open: boolean; onClose: 
               ))}
             </dl>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Description</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Description
+              </p>
               <p className="mt-1 text-sm text-muted-foreground">{form.description || "—"}</p>
             </div>
             <div className="flex flex-wrap gap-2">

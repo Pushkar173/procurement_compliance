@@ -25,7 +25,14 @@ import {
   WorkflowStrip,
 } from "@/components/common/primitives";
 import { ComplianceProgress, ComplianceTable } from "@/components/compliance/compliance-table";
-import { LIFECYCLE_STAGES } from "@/data/demoData";
+import {
+  LIFECYCLE_STAGES,
+  type Tender,
+  type ComplianceItem,
+  type RegDocument,
+  type Contract,
+  type AuditEvent,
+} from "@/data/demoData";
 import { formatINR, useStore } from "@/store/app-store";
 export const Route = createFileRoute("/_shell/tenders/$tenderId")({
   head: ({ params }) => ({
@@ -42,8 +49,14 @@ export const Route = createFileRoute("/_shell/tenders/$tenderId")({
       },
     ],
   }),
-  loader: async ({ params }) => {
-    return { dbTender: null, dbCompliance: [], dbDocuments: [], dbContracts: [], dbAudit: [] };
+  loader: async () => {
+    return {
+      dbTender: null as Tender | null,
+      dbCompliance: [] as ComplianceItem[],
+      dbDocuments: [] as RegDocument[],
+      dbContracts: [] as Contract[],
+      dbAudit: [] as AuditEvent[],
+    };
   },
   component: TenderDetail,
   notFoundComponent: () => (
@@ -63,11 +76,11 @@ export const Route = createFileRoute("/_shell/tenders/$tenderId")({
 });
 
 function TenderDetail() {
-  const { dbTender } = Route.useLoaderData() as any;
+  const { dbTender } = Route.useLoaderData();
   const { tenderId } = Route.useParams();
   const { tenders: storeTenders, documents, compliance, contracts, audit, user } = useStore();
   const role = user?.role;
-  
+
   const storeTender = storeTenders.find((t) => t.id === tenderId);
   const tender = dbTender || storeTender;
   if (!tender) throw notFound();
@@ -75,16 +88,22 @@ function TenderDetail() {
   const items = compliance.filter((c) => c.tenderId === tender.id);
   const regs = documents.filter((d) => tender.regulationIds.includes(d.id));
   const linkedContracts = contracts.filter((c) => c.tenderId === tender.id);
-  const history = audit.filter((a) => a.object.includes(tender.id) || items.some((i) => a.object.includes(i.id)));
+  const history = audit.filter(
+    (a) => a.object.includes(tender.id) || items.some((i) => a.object.includes(i.id)),
+  );
   const stageIndex = LIFECYCLE_STAGES.indexOf(tender.stage);
 
   // RBAC: Admin can edit anything. Officer can only edit if they are the officer (or created_by in real DB). Auditor cannot edit.
   // Using tender.officer for mock data comparison since we don't have created_by yet.
-  const canEdit = role === "admin" || (role === "officer" && tender.officer === ((user as any)?.user_metadata?.name || "Pushkar Bhati"));
+  const canEdit =
+    role === "admin" || (role === "officer" && tender.officer === (user?.name || "Pushkar Bhati"));
 
   return (
     <div className="space-y-6">
-      <Link to="/tenders" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/tenders"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="size-4" /> Back to Tender Management
       </Link>
 
@@ -98,7 +117,11 @@ function TenderDetail() {
               size="sm"
               variant="outline"
               disabled={!canEdit}
-              onClick={() => toast.info("Edit is a demo action", { description: "Tender fields would open in an editable form." })}
+              onClick={() =>
+                toast.info("Edit is a demo action", {
+                  description: "Tender fields would open in an editable form.",
+                })
+              }
             >
               <PencilLine className="size-3.5" /> Edit
             </Btn>
@@ -111,7 +134,11 @@ function TenderDetail() {
               size="sm"
               variant="outline"
               disabled={!canEdit}
-              onClick={() => toast.info("Add Document is a demo action", { description: "A file would be attached to this tender file." })}
+              onClick={() =>
+                toast.info("Add Document is a demo action", {
+                  description: "A file would be attached to this tender file.",
+                })
+              }
             >
               <FilePlus2 className="size-3.5" /> Add Document
             </Btn>
@@ -148,7 +175,9 @@ function TenderDetail() {
             ]}
           />
           <div className="mt-5 border-t border-border pt-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Description</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Description
+            </p>
             <p className="mt-1.5 text-sm text-muted-foreground">{tender.description}</p>
           </div>
         </Panel>
@@ -205,7 +234,9 @@ function TenderDetail() {
                 >
                   {s}
                 </span>
-                {i < LIFECYCLE_STAGES.length - 1 && <span className="text-muted-foreground">→</span>}
+                {i < LIFECYCLE_STAGES.length - 1 && (
+                  <span className="text-muted-foreground">→</span>
+                )}
               </li>
             ))}
           </ol>
@@ -261,7 +292,10 @@ function TenderDetail() {
         )}
       </Panel>
 
-      <Panel title="Compliance Checklist" description="Requirement → source regulation → evidence → status">
+      <Panel
+        title="Compliance Checklist"
+        description="Requirement → source regulation → evidence → status"
+      >
         <ComplianceTable
           items={items}
           scopeLabel={`Checklist for ${tender.id}`}
@@ -272,7 +306,11 @@ function TenderDetail() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title="Tender Documents" bodyClassName="p-0">
           {tender.documents.length === 0 ? (
-            <EmptyState icon={FilePlus2} title="No documents attached." description="Attach the notice, specifications and evaluation records here." />
+            <EmptyState
+              icon={FilePlus2}
+              title="No documents attached."
+              description="Attach the notice, specifications and evaluation records here."
+            />
           ) : (
             <ul className="divide-y divide-border">
               {tender.documents.map((d: { name: string; date: string; by: string }) => (
@@ -284,7 +322,11 @@ function TenderDetail() {
                       {d.date} · {d.by}
                     </p>
                   </div>
-                  <Btn size="sm" variant="ghost" onClick={() => toast.info("Download is a demo action")}>
+                  <Btn
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => toast.info("Download is a demo action")}
+                  >
                     Download
                   </Btn>
                 </li>
@@ -293,7 +335,11 @@ function TenderDetail() {
           )}
         </Panel>
 
-        <Panel title="Activity History" description="Attributable record of changes" bodyClassName="p-0">
+        <Panel
+          title="Activity History"
+          description="Attributable record of changes"
+          bodyClassName="p-0"
+        >
           {history.length === 0 ? (
             <EmptyState icon={RefreshCw} title="No activity recorded yet." />
           ) : (
@@ -307,7 +353,8 @@ function TenderDetail() {
                     {a.previous && a.next && (
                       <>
                         {" "}
-                        · <span className="font-medium">{a.previous}</span> → <span className="font-medium">{a.next}</span>
+                        · <span className="font-medium">{a.previous}</span> →{" "}
+                        <span className="font-medium">{a.next}</span>
                       </>
                     )}
                   </p>

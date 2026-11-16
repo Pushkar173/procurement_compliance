@@ -88,8 +88,15 @@ function greeting() {
 
 function Dashboard() {
   const { dbTenders, dbContracts, dbCompliance, dbDocuments, dbAudit } = Route.useLoaderData();
-  const { user, tenders: storeTenders, contracts: storeContracts, documents: storeDocs, compliance: storeComp, audit: storeAudit } = useStore();
-  
+  const {
+    user,
+    tenders: storeTenders,
+    contracts: storeContracts,
+    documents: storeDocs,
+    compliance: storeComp,
+    audit: storeAudit,
+  } = useStore();
+
   const tenders = dbTenders.length > 0 ? dbTenders : storeTenders;
   const contracts = dbContracts.length > 0 ? dbContracts : storeContracts;
   const compliance = dbCompliance.length > 0 ? dbCompliance : storeComp;
@@ -97,21 +104,32 @@ function Dashboard() {
   const audit = dbAudit.length > 0 ? dbAudit : storeAudit;
 
   const activeTenders = tenders.filter((t) => !["Closed", "Draft"].includes(t.status)).length;
-  const activeContracts = contracts.filter((c) => c.status === "Active" || c.status === "Expiring Soon").length;
+  const activeContracts = contracts.filter(
+    (c) => c.status === "Active" || c.status === "Expiring Soon",
+  ).length;
   const counts = statusCounts(compliance);
   const overall = compliancePercent(compliance);
 
   const complianceData = [
     { name: "Compliant", value: counts.Compliant, color: "var(--color-chart-2)" },
     { name: "Pending", value: counts.Pending, color: "var(--color-chart-3)" },
-    { name: "Partially Compliant", value: counts["Partially Compliant"], color: "var(--color-chart-4)" },
+    {
+      name: "Partially Compliant",
+      value: counts["Partially Compliant"],
+      color: "var(--color-chart-4)",
+    },
     { name: "Non-Compliant", value: counts["Non-Compliant"], color: "var(--color-chart-6)" },
     { name: "Not Applicable", value: counts["Not Applicable"], color: "var(--color-chart-5)" },
   ].filter((d) => d.value > 0);
 
-  const tenderStatusData = ["Draft", "Under Review", "Published", "Evaluation", "Awarded", "Closed"].map(
-    (s) => ({ status: s, count: tenders.filter((t) => t.status === s).length }),
-  );
+  const tenderStatusData = [
+    "Draft",
+    "Under Review",
+    "Published",
+    "Evaluation",
+    "Awarded",
+    "Closed",
+  ].map((s) => ({ status: s, count: tenders.filter((t) => t.status === s).length }));
 
   const contractStatusData = ["Active", "Expiring Soon", "Completed", "Terminated"].map((s) => ({
     status: s,
@@ -135,7 +153,9 @@ function Dashboard() {
           <h1 className="text-2xl font-semibold tracking-tight">
             {greeting()}, {user?.designation?.split("(")[0]?.trim()}
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Here's your procurement compliance overview. Start by auditing a tender below.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Here's your procurement compliance overview. Start by auditing a tender below.
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Pill tone="primary">Overall compliance {overall}%</Pill>
@@ -154,7 +174,8 @@ function Dashboard() {
               <div>
                 <h2 className="text-lg font-semibold tracking-tight">Audit a Tender</h2>
                 <p className="mt-1 max-w-lg text-sm text-muted-foreground">
-                  Upload a tender document, check it against procurement rules, and generate a compliance report — all in one guided workflow.
+                  Upload a tender document, check it against procurement rules, and generate a
+                  compliance report — all in one guided workflow.
                 </p>
               </div>
             </div>
@@ -172,12 +193,19 @@ function Dashboard() {
           <h3 className="text-sm font-semibold">Sample PDFs &amp; Guides</h3>
         </div>
         <p className="mb-3 text-xs text-muted-foreground">
-          Download fictional sample tenders to try the audit flow, or read the workflow explainer and viva guide.
+          Download fictional sample tenders to try the audit flow, or read the workflow explainer
+          and viva guide.
         </p>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { href: "/samples/sample-tender-1-smart-classroom.pdf", label: "Sample Tender 1 — Smart Classroom" },
-            { href: "/samples/sample-tender-2-road-resurfacing.pdf", label: "Sample Tender 2 — Road Resurfacing" },
+            {
+              href: "/samples/sample-tender-1-smart-classroom.pdf",
+              label: "Sample Tender 1 — Smart Classroom",
+            },
+            {
+              href: "/samples/sample-tender-2-road-resurfacing.pdf",
+              label: "Sample Tender 2 — Road Resurfacing",
+            },
             { href: "/samples/how-tender-audit-works.pdf", label: "How the Audit Works" },
             { href: "/samples/viva-demo-guide.pdf", label: "Viva & Demo Guide" },
           ].map((s) => (
@@ -202,16 +230,60 @@ function Dashboard() {
       <WorkflowStrip />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Active Tenders" value={activeTenders} icon={FileText} to="/tenders" hint="Under review, published, evaluation or awarded" />
-        <StatCard label="Active Contracts" value={activeContracts} icon={Building2} tone="info" to="/contracts" hint="Includes contracts expiring soon" />
-        <StatCard label="Total Regulations & Documents" value={documents.length} icon={BookOpen} tone="primary" to="/documents" hint="Repository records with version history" />
-        <StatCard label="Pending Compliance" value={counts.Pending + counts["Non-Compliant"]} icon={ClipboardCheck} tone="warning" to="/compliance" hint="Pending and non-compliant requirements" />
-        <StatCard label="Completed Compliance" value={counts.Compliant} icon={CheckCircle2} tone="success" to="/compliance" hint="Requirements marked compliant" />
-        <StatCard label="Upcoming Deadlines" value={deadlines.length} icon={CalendarClock} tone="caution" to="/reports" hint="Next 14 days" />
+        <StatCard
+          label="Active Tenders"
+          value={activeTenders}
+          icon={FileText}
+          to="/tenders"
+          hint="Under review, published, evaluation or awarded"
+        />
+        <StatCard
+          label="Active Contracts"
+          value={activeContracts}
+          icon={Building2}
+          tone="info"
+          to="/contracts"
+          hint="Includes contracts expiring soon"
+        />
+        <StatCard
+          label="Total Regulations & Documents"
+          value={documents.length}
+          icon={BookOpen}
+          tone="primary"
+          to="/documents"
+          hint="Repository records with version history"
+        />
+        <StatCard
+          label="Pending Compliance"
+          value={counts.Pending + counts["Non-Compliant"]}
+          icon={ClipboardCheck}
+          tone="warning"
+          to="/compliance"
+          hint="Pending and non-compliant requirements"
+        />
+        <StatCard
+          label="Completed Compliance"
+          value={counts.Compliant}
+          icon={CheckCircle2}
+          tone="success"
+          to="/compliance"
+          hint="Requirements marked compliant"
+        />
+        <StatCard
+          label="Upcoming Deadlines"
+          value={deadlines.length}
+          icon={CalendarClock}
+          tone="caution"
+          to="/reports"
+          hint="Next 14 days"
+        />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title="Compliance Overview" description="Requirement-wise status across all tenders and contracts">
+        <Panel
+          title="Compliance Overview"
+          description="Requirement-wise status across all tenders and contracts"
+        >
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
@@ -247,8 +319,16 @@ function Dashboard() {
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={trend} margin={{ left: -18, right: 8, top: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
-              <YAxis domain={[60, 100]} tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
+              <XAxis
+                dataKey="month"
+                tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+              />
+              <YAxis
+                domain={[60, 100]}
+                tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+              />
               <Tooltip contentStyle={tooltipStyle} formatter={(v) => [`${v}%`, "Compliance"]} />
               <Line
                 type="monotone"
@@ -266,26 +346,59 @@ function Dashboard() {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={tenderStatusData} margin={{ left: -22, right: 8, top: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="status" tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" interval={0} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
+              <XAxis
+                dataKey="status"
+                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+                interval={0}
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+              />
               <Tooltip contentStyle={tooltipStyle} />
-              <Bar dataKey="count" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} maxBarSize={44} />
+              <Bar
+                dataKey="count"
+                fill="var(--color-chart-1)"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={44}
+              />
             </BarChart>
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Contract Status" description="Contracts by status, including those expiring soon">
+        <Panel
+          title="Contract Status"
+          description="Contracts by status, including those expiring soon"
+        >
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={contractStatusData} margin={{ left: -22, right: 8, top: 8 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-              <XAxis dataKey="status" tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" interval={0} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }} stroke="var(--color-border)" />
+              <XAxis
+                dataKey="status"
+                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+                interval={0}
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
+                stroke="var(--color-border)"
+              />
               <Tooltip contentStyle={tooltipStyle} />
               <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={44}>
                 {contractStatusData.map((d, i) => (
                   <Cell
                     key={d.status}
-                    fill={["var(--color-chart-2)", "var(--color-chart-3)", "var(--color-chart-1)", "var(--color-chart-6)"][i]}
+                    fill={
+                      [
+                        "var(--color-chart-2)",
+                        "var(--color-chart-3)",
+                        "var(--color-chart-1)",
+                        "var(--color-chart-6)",
+                      ][i]
+                    }
                   />
                 ))}
               </Bar>
@@ -321,7 +434,10 @@ function Dashboard() {
               .map((a) => {
                 const Icon = activityIcons[a.icon] ?? CircleDot;
                 return (
-                  <li key={a.id} className="flex items-start gap-3 px-5 py-3.5 transition-colors hover:bg-accent/40">
+                  <li
+                    key={a.id}
+                    className="flex items-start gap-3 px-5 py-3.5 transition-colors hover:bg-accent/40"
+                  >
                     <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
                       <Icon className="size-4" />
                     </span>
@@ -358,8 +474,20 @@ function Dashboard() {
                       <p className="text-sm font-medium leading-snug">{d.title}</p>
                       <p className="mt-0.5 text-xs text-muted-foreground">{d.date}</p>
                     </div>
-                    <Pill tone={d.severity === "high" ? "danger" : d.severity === "medium" ? "warning" : "neutral"}>
-                      {d.severity === "high" ? "Urgent" : d.severity === "medium" ? "Due soon" : "Planned"}
+                    <Pill
+                      tone={
+                        d.severity === "high"
+                          ? "danger"
+                          : d.severity === "medium"
+                            ? "warning"
+                            : "neutral"
+                      }
+                    >
+                      {d.severity === "high"
+                        ? "Urgent"
+                        : d.severity === "medium"
+                          ? "Due soon"
+                          : "Planned"}
                     </Pill>
                   </li>
                 ))}
@@ -380,7 +508,9 @@ function Dashboard() {
                     >
                       {t.id}
                     </Link>
-                    <span className="text-xs text-muted-foreground">{items.length} requirements</span>
+                    <span className="text-xs text-muted-foreground">
+                      {items.length} requirements
+                    </span>
                   </div>
                   <ProgressBar value={compliancePercent(items)} className="mt-1.5" />
                 </div>

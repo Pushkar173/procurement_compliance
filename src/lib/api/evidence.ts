@@ -15,10 +15,10 @@ const ALLOWED_TYPES = ["application/pdf", "image/png", "image/jpeg"];
 
 export interface EvidenceFile {
   name: string;
-  path: string;       // bucket-relative storage path
+  path: string; // bucket-relative storage path
   size: number;
   type: string;
-  url: string;        // signed download URL
+  url: string; // signed download URL
   uploadedAt: string;
 }
 
@@ -55,13 +55,11 @@ export async function uploadEvidenceFile(
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const storagePath = `${complianceRecordId}/${timestamp}_${safeName}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from(BUCKET)
-    .upload(storagePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type,
-    });
+  const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type,
+  });
 
   if (uploadError) throw uploadError;
 
@@ -85,9 +83,7 @@ export async function uploadEvidenceFile(
 /**
  * List all evidence files for a compliance record.
  */
-export async function listEvidenceFiles(
-  complianceRecordId: string,
-): Promise<EvidenceFile[]> {
+export async function listEvidenceFiles(complianceRecordId: string): Promise<EvidenceFile[]> {
   const { data, error } = await supabase.storage
     .from(BUCKET)
     .list(complianceRecordId, { sortBy: { column: "created_at", order: "desc" } });
@@ -117,9 +113,7 @@ export async function listEvidenceFiles(
  * Get a fresh signed URL for a specific evidence file.
  */
 export async function getEvidenceUrl(storagePath: string): Promise<string> {
-  const { data, error } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrl(storagePath, 3600);
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(storagePath, 3600);
 
   if (error) throw error;
   return data.signedUrl;
@@ -129,9 +123,7 @@ export async function getEvidenceUrl(storagePath: string): Promise<string> {
  * Remove an evidence file from storage.
  */
 export async function deleteEvidenceFile(storagePath: string): Promise<void> {
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .remove([storagePath]);
+  const { error } = await supabase.storage.from(BUCKET).remove([storagePath]);
 
   if (error) throw error;
 }
@@ -143,8 +135,8 @@ export async function updateComplianceEvidenceUrls(
   complianceRecordId: string,
   evidenceUrls: string[],
 ): Promise<void> {
-  const { error } = await (supabase
-    .from("compliance_records") as any)
+  const { error } = await supabase
+    .from("compliance_records")
     .update({ evidence_urls: evidenceUrls })
     .eq("id", complianceRecordId);
 
