@@ -919,98 +919,98 @@ SELECT 'tender',
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Publish tender notice for the minimum prescribed period'
       AND document_ref = 'DOC-001'),
-  'compliant', 'Notice published on the portal on 08 Sep 2026.', ARRAY['Evidence_CR-001.pdf']
+  'compliant'::compliance_status, 'Notice published on the portal on 08 Sep 2026.', ARRAY['Evidence_CR-001.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Record the basis of estimated value in the tender file'
       AND document_ref = 'DOC-001'),
-  'compliant', 'Estimate note approved by competent authority.', ARRAY['Evidence_CR-002.pdf']
+  'compliant'::compliance_status, 'Estimate note approved by competent authority.', ARRAY['Evidence_CR-002.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Constitute a documented evaluation committee'
       AND document_ref = 'DOC-001'),
-  'compliant', NULL, ARRAY['Evidence_CR-003.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-003.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Include an integrity undertaking clause in the bid document'
       AND document_ref = 'DOC-002'),
-  'compliant', NULL, ARRAY['Evidence_CR-004.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-004.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Obtain conflict-of-interest declarations from committee members'
       AND document_ref = 'DOC-002'),
-  'pending', 'Two declarations awaited from technical members.', '{}'
+  'pending'::compliance_status, 'Two declarations awaited from technical members.', '{}'
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Maintain a retrievable record of complaints and their disposal'
       AND document_ref = 'DOC-002'),
-  'compliant', NULL, ARRAY['Evidence_CR-006.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-006.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Publish the tender on the electronic portal'
       AND document_ref = 'DOC-007'),
-  'compliant', NULL, ARRAY['Evidence_CR-007.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-007.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Retain system-generated bid opening record'
       AND document_ref = 'DOC-007'),
-  'compliant', NULL, ARRAY['Bid_Opening_Record.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Bid_Opening_Record.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Preserve portal audit logs for the prescribed period'
       AND document_ref = 'DOC-007'),
-  'under_review', 'Logs available from Mar 2026 onward; earlier export in progress.', '{}'
+  'under_review'::compliance_status, 'Logs available from Mar 2026 onward; earlier export in progress.', '{}'
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Index the tender file with a unique reference'
       AND document_ref = 'DOC-010'),
-  'compliant', NULL, ARRAY['Evidence_CR-010.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-010.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Link compliance evidence to the corresponding requirement'
       AND document_ref = 'DOC-010'),
-  'compliant', NULL, ARRAY['Evidence_CR-011.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-011.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Obtain administrative approval from the competent authority'
       AND document_ref = 'DOC-011'),
-  'compliant', NULL, ARRAY['Evidence_CR-012.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-012.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Record expenditure sanction reference in the tender file'
       AND document_ref = 'DOC-011'),
-  'pending', 'Sanction file under circulation.', '{}'
+  'pending'::compliance_status, 'Sanction file under circulation.', '{}'
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-014'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Define measurable milestones in the contract schedule'
       AND document_ref = 'DOC-003'),
-  'pending', 'Draft milestone schedule prepared, approval awaited.', '{}'
+  'pending'::compliance_status, 'Draft milestone schedule prepared, approval awaited.', '{}'
 
 -- ── Tender: TDR-2026-016 ─────────────────────────────────────────────────────
 
@@ -1019,14 +1019,14 @@ UNION ALL SELECT 'tender',
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'State bid validity period explicitly in the notice'
       AND document_ref = 'DOC-004'),
-  'compliant', NULL, ARRAY['Evidence_CR-017.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-017.pdf']
 
 UNION ALL SELECT 'tender',
   (SELECT id FROM public.tenders WHERE tender_id = 'TDR-2026-016'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Use the prescribed bid security declaration format'
       AND document_ref = 'DOC-013'),
-  'pending', NULL, '{}'
+  'pending'::compliance_status, NULL, '{}'
 
 -- ── Contract: CON-2026-011 ───────────────────────────────────────────────────
 
@@ -1035,14 +1035,14 @@ UNION ALL SELECT 'contract',
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Record stage-wise inspection reports'
       AND document_ref = 'DOC-008'),
-  'compliant', NULL, ARRAY['Lot1_Inspection_Report.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Lot1_Inspection_Report.pdf']
 
 UNION ALL SELECT 'contract',
   (SELECT id FROM public.contracts WHERE contract_ref = 'CON-2026-011'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Obtain third-party inspection certificate where prescribed'
       AND document_ref = 'DOC-008'),
-  'under_review', 'Certificate received for lot 1; lot 2 pending.', '{}'
+  'under_review'::compliance_status, 'Certificate received for lot 1; lot 2 pending.', '{}'
 
 -- ── Contract: CON-2026-008 ───────────────────────────────────────────────────
 
@@ -1051,21 +1051,21 @@ UNION ALL SELECT 'contract',
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Initiate renewal proposal before the prescribed lead time'
       AND document_ref = 'DOC-006'),
-  'pending', 'Renewal note to be initiated; contract expiry approaching.', '{}'
+  'pending'::compliance_status, 'Renewal note to be initiated; contract expiry approaching.', '{}'
 
 UNION ALL SELECT 'contract',
   (SELECT id FROM public.contracts WHERE contract_ref = 'CON-2026-008'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Attach vendor performance review to the renewal note'
       AND document_ref = 'DOC-006'),
-  'pending', NULL, '{}'
+  'pending'::compliance_status, NULL, '{}'
 
 UNION ALL SELECT 'contract',
   (SELECT id FROM public.contracts WHERE contract_ref = 'CON-2026-008'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Record half-yearly vendor performance score'
       AND document_ref = 'DOC-014'),
-  'compliant', NULL, ARRAY['Vendor_Score_H1.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Vendor_Score_H1.pdf']
 
 -- ── Contract: CON-2026-003 ───────────────────────────────────────────────────
 
@@ -1074,14 +1074,14 @@ UNION ALL SELECT 'contract',
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Obtain an approved site safety plan before work start'
       AND document_ref = 'DOC-012'),
-  'compliant', NULL, ARRAY['Evidence_CR-024.pdf']
+  'compliant'::compliance_status, NULL, ARRAY['Evidence_CR-024.pdf']
 
 UNION ALL SELECT 'contract',
   (SELECT id FROM public.contracts WHERE contract_ref = 'CON-2026-003'),
   (SELECT id FROM public.compliance_requirements
     WHERE title = 'Submit monthly safety compliance report'
       AND document_ref = 'DOC-012'),
-  'non_compliant', 'No safety report submitted for September 2026.', '{}';
+  'non_compliant'::compliance_status, 'No safety report submitted for September 2026.', '{}';
 
 
 -- =============================================================================
